@@ -154,9 +154,9 @@ export function compact_tree(
         // http://localhost:5173/?g=%3CE%3E+%3D+%3C%22%28%22%3E+E+%3C%22%29%22%3E+%7C+mul+%7C+add+%7C+sub+%7C+num%0Amul+%3D+E+%3C%22*%22%3E+E%0Aadd+%3D+E+%3C%22%2B%22%3E+E%0Asub+%3D+E+%3C%22-%22%3E+E%0Anum+%3D+%23%22%5C%5Cd%22&t=1%2B2*3%2B4&all=1&ranges=
         if (children.every((x) => x.length === 1)) {
           // http://localhost:5173/?g=EXP+%3D+E%3B%0A%3CE%3E+%3D+%3C%22%28%22%3E+E+%3C%22%29%22%3E+%7C+mul+%7C+add+%7C+sub+%7C+num%0Amul+%3D+E+%3C%22*%22%3E+E%0Aadd+%3D+E+%3C%22%2B%22%3E+E%0Asub+%3D+E+%3C%22-%22%3E+E%0Anum+%3D+%23%22%5C%5Cd%22&t=1%2B2*3%2B4&all=1&ranges=1
-          const ch = children
-            .flat()
-            .flatMap((x) => (x.type === "packed" ? x.children : x));
+          const ch = children.flatMap((x) =>
+            x[0].type === "packed" ? x[0].children : x[0]
+          );
           return addPos(
             {
               children: ch,
@@ -166,8 +166,12 @@ export function compact_tree(
           );
         }
 
-        // http://localhost:5173/?g=E+%3D+E+%28%22%2B%22+%7C+%22*%22%29+E+%7C+%221%22&t=1%2B1%2B1&all=1&ranges=1
-        return children.map((ch) => {
+        return children.flatMap((ch) => {
+          // don't have examples for this
+          if (ch.length === 0) return [];
+          // don't have examples for this
+          if (ch.length === 1) return ch[0];
+          // http://localhost:5173/?g=E+%3D+E+%28%22%2B%22+%7C+%22*%22%29+E+%7C+%221%22&t=1%2B1%2B1&all=1&ranges=1
           return addPos(
             {
               children: ch,

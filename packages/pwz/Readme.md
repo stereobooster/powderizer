@@ -41,11 +41,11 @@ TODO:
   - left / right recursion
   - ambigious
   - math expression unambigious
-- [ ] compare against [instaparsejs](https://github.com/stereobooster/instaparsejs)
 - [ ] readme
 - [ ] publish npm package
 - [ ] Lisp parser
   - MAL
+- [ ] compare against [instaparsejs](https://github.com/stereobooster/instaparsejs)
 - [ ] why it produces only one tree and not array of trees?
 - [ ] error reporting?
 - [ ] functions/macros, import
