@@ -1,0 +1,34 @@
+{
+  "name": "pwz",
+  "version": "0.0.1",
+  "description": "parsing with zippers",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/stereobooster/pwz.git",
+    "directory": "packages/pwz"
+  },
+  "author": "stereobooster",
+  "license": "MIT",
+  "keywords": [],
+  "type": "module",
+  "exports": {
+    "types": "./dist/index.d.js",
+    "default": "./dist/index.js"
+  },
+  "main": "./dist/index.js",
+  "module": "./dist/index.js",
+  "files": [
+    "./dist/*"
+  ],
+  "types": "./dist/index.d.js",
+  "scripts": {
+    "test": "vitest",
+    "prepublishOnly": "npm run build",
+    "build": "rm -rf dist && tsc",
+    "dev": "tsc --watch",
+    "clean": "rm -rf dist",
+    "tsc": "tsc"
+  },
+  "devDependencies": {},
+  "dependencies": {}
+}

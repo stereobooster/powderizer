@@ -1,0 +1,27 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+html,
+body,
+.height100p {
+  min-height: 100% !important;
+  height: 100%;
+}
+
+#result {
+  max-height: calc(100dvh - 2rem);
+}
+
+#result svg {
+  max-height: 100%;
+}
+
+.beoe {
+  /* for vertical allignment */
+  display: flex;
+}
+
+#editor {
+  height: 120px;
+}

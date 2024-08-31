@@ -1,0 +1,103 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <link rel="icon" type="image/svg+xml" href="/vite.svg" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>pwz playground</title>
+  </head>
+  <body>
+    <div class="grid grid-cols-2 gap-4 p-4 height100p">
+      <div class="prose">
+        <article>
+          <h1>Pwz playground</h1>
+          <p>
+            <a href="https://github.com/stereobooster/pwz">Github repo</a>
+          </p>
+        </article>
+
+        <div class="mb-4">
+          <div id="editor"></div>
+          <!-- <label for="grammar" class="block text-sm font-medium text-gray-700">
+            Grammar (EBNF)
+          </label>
+          <textarea
+            id="grammar"
+            class="mt-2 w-full rounded-lg border-gray-200 align-top shadow-sm sm:text-sm"
+            rows="5"
+          ></textarea> -->
+        </div>
+
+        <div class="mb-4">
+          <label for="text" class="block text-sm font-medium text-gray-700">
+            Text
+          </label>
+          <textarea
+            id="text"
+            class="mt-2 w-full rounded-lg border-gray-200 align-top shadow-sm sm:text-sm"
+            rows="4"
+          ></textarea>
+        </div>
+
+        <div class="space-y-2">
+          <label class="flex cursor-pointer items-start gap-4">
+            <div class="flex items-center">
+              &#8203;
+              <input
+                type="checkbox"
+                class="size-4 rounded border-gray-300"
+                id="ranges"
+                checked
+              />
+            </div>
+
+            <div>
+              <strong class="font-medium text-gray-900">Show ranges</strong>
+            </div>
+          </label>
+        </div>
+
+        <div class="space-y-2">
+          <label class="flex cursor-pointer items-start gap-4">
+            <div class="flex items-center">
+              &#8203;
+              <input
+                type="checkbox"
+                class="size-4 rounded border-gray-300"
+                id="allTrees"
+              />
+            </div>
+
+            <div>
+              <strong class="font-medium text-gray-900" id="allTreesLabel"
+                >Show all trees</strong
+              >
+            </div>
+          </label>
+        </div>
+
+        <div class="space-y-2">
+          <button
+            class="inline-block px-4 py-2 text-sm font-medium text-gray-700 hover:bg-gray-50 rounded-md border shadow-sm"
+            id="download"
+          >
+            Download SVG
+          </button>
+        </div>
+
+        <div
+          role="alert"
+          id="error"
+          class="rounded border-s-4 border-red-500 bg-red-50 p-4 hidden"
+        >
+          <strong class="block font-medium text-red-800">Error</strong>
+          <p class="mt-2 text-sm text-red-700" id="errorMessage"></p>
+        </div>
+      </div>
+      <div>
+        <figure id="result" class="beoe height100p"></figure>
+      </div>
+    </div>
+    <script type="module" src="/src/main.ts"></script>
+  </body>
+</html>
