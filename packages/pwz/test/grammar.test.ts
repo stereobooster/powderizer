@@ -223,6 +223,14 @@ describe("evaluate", () => {
     expect(grammar1).toEqual(grammar2);
   });
 
+  it("symbol directly in the body 2", () => {
+    const grammar1 = evaluate(
+      parseGrammar(`EXP = E
+      <E> = ""`)
+    );
+    expect(grammar1).toBeDefined();
+  });
+
   it("empty string", () => {
     const grammar1 = evaluate(parseGrammar(`S = ""`));
     const grammar2 = seq([], "S");

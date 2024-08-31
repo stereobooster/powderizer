@@ -15,6 +15,7 @@ TODO:
 - [x] support strings, arrays
 - [x] Option to show `pos`
 - [x] Ambiguous trees resolution
+- [x] demo site
 - add BNF grammar with regular extension
   - [x] evaluator
   - [x] support precedence for `a b | c`
@@ -32,7 +33,6 @@ TODO:
   - [x] support optional `\n` and ` ` in `()`, `<>`, `[]`
   - [ ] comments?
   - [ ] multi-char regexps? (accumulate striing?)
-- [ ] demo site
 - [ ] add tests
   - Alt in Alt
   - Seq in Seq

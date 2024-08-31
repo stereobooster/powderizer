@@ -80,7 +80,7 @@ async function process(valid = true) {
       error.classList.add("hidden");
       allTreesLabel.textContent = `Show all trees`;
 
-      const trees = await parseClient(grammarValue, textValue, {
+      const tree = await parseClient(grammarValue, textValue, {
         ambiguity: showAlltrees ? "sppf" : "first",
         showPos: showRanges
       });
@@ -88,11 +88,11 @@ async function process(valid = true) {
       if (panZoomInstance) panZoomInstance.off();
       result.innerHTML = "";
 
-      if (!trees) {
+      if (!tree) {
         error.classList.remove("hidden");
         errorMessage.textContent = "Can't parse";
       } else {
-        result.innerHTML = renderDot(treeToDot(trees, showRanges));
+        result.innerHTML = renderDot(treeToDot(tree, showRanges));
         const element = result.firstElementChild;
 
         // @ts-expect-error

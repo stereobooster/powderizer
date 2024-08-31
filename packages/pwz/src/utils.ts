@@ -72,12 +72,7 @@ export function compact_tree(
       }
     : (node: SPPFLike, _e: Exp) => node;
 
-  function rec(
-    e: Exp,
-    _i = 0, // so it would work with map
-    _a = [] as Exp[], // so it would work with map
-    packedAbove = false
-  ): SPPFLike | SPPFLike[] {
+  function rec(e: Exp): SPPFLike | SPPFLike[] {
     switch (e.e.type) {
       case "Rep":
       case "Tok":
@@ -147,7 +142,7 @@ export function compact_tree(
 
         const children = e.e.exps
           .map((e_) => {
-            const ch = rec(e_, undefined, undefined, true);
+            const ch = rec(e_);
             return Array.isArray(ch) ? ch : [ch];
           })
           .filter((x) => x.length > 0);
@@ -155,24 +150,27 @@ export function compact_tree(
         if (children.length === 0) return [];
         if (children.length === 1 || ambiguity === "first") return children[0];
         if (ambiguity === "error") throw new Error("Ambiguous parse tree");
-        if (packedAbove) return children.flat();
 
-        // this works for http://localhost:5173/?g=%3CE%3E+%3D+%3C%22%28%22%3E+E+%3C%22%29%22%3E+%7C+mul+%7C+add+%7C+sub+%7C+num%0Amul+%3D+E+%3C%22*%22%3E+E%0Aadd+%3D+E+%3C%22%2B%22%3E+E%0Asub+%3D+E+%3C%22-%22%3E+E%0Anum+%3D+%23%22%5C%5Cd%22&t=1%2B2*3%2B4&all=1&ranges=
+        // http://localhost:5173/?g=%3CE%3E+%3D+%3C%22%28%22%3E+E+%3C%22%29%22%3E+%7C+mul+%7C+add+%7C+sub+%7C+num%0Amul+%3D+E+%3C%22*%22%3E+E%0Aadd+%3D+E+%3C%22%2B%22%3E+E%0Asub+%3D+E+%3C%22-%22%3E+E%0Anum+%3D+%23%22%5C%5Cd%22&t=1%2B2*3%2B4&all=1&ranges=
         if (children.every((x) => x.length === 1)) {
+          // http://localhost:5173/?g=EXP+%3D+E%3B%0A%3CE%3E+%3D+%3C%22%28%22%3E+E+%3C%22%29%22%3E+%7C+mul+%7C+add+%7C+sub+%7C+num%0Amul+%3D+E+%3C%22*%22%3E+E%0Aadd+%3D+E+%3C%22%2B%22%3E+E%0Asub+%3D+E+%3C%22-%22%3E+E%0Anum+%3D+%23%22%5C%5Cd%22&t=1%2B2*3%2B4&all=1&ranges=1
+          const ch = children
+            .flat()
+            .flatMap((x) => (x.type === "packed" ? x.children : x));
           return addPos(
             {
-              children: children.flat(),
+              children: ch,
               type: "packed",
             },
             e
           );
         }
 
-        // this works for http://localhost:5173/?g=E+%3D+E+%28%22%2B%22+%7C+%22*%22%29+E+%7C+%221%22&t=1%2B1%2B1&all=1&ranges=1
-        return children.map((x) => {
+        // http://localhost:5173/?g=E+%3D+E+%28%22%2B%22+%7C+%22*%22%29+E+%7C+%221%22&t=1%2B1%2B1&all=1&ranges=1
+        return children.map((ch) => {
           return addPos(
             {
-              children: x,
+              children: ch,
               type: "packed",
             },
             e
@@ -189,10 +187,12 @@ export function compact_tree(
   const result = rec(e);
   if (Array.isArray(result)) {
     if (result.length <= 1) return result[0];
-    return {
+    const rr: SPPFLike = {
       children: result,
       tag: "",
     };
+    if (showPos) rr.pos = result[0].pos;
+    return rr;
   }
   return result;
 }

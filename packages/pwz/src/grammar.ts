@@ -115,7 +115,7 @@ export function rules() {
   // todo: support \r\n
   const nl = tok("\n");
   // note: \s includes \n and \r https://developer.mozilla.org/en-US/docs/Web/JavaScript/Guide/Regular_expressions/Character_classes
-  const space = reg(/\s/);
+  const space = reg(/[\f\t\v\u0020\u00a0\u1680\u2000-\u200a\u2028\u2029\u202f\u205f\u3000\ufeff]/);
   const spaces = rep(space);
   const optionalSpace = omit(rep(space));
   const integer = rep(reg(/[0-9]/), "integer", 1);
@@ -181,7 +181,7 @@ export function rules() {
     delimiter: alt([nl, semicolon]),
     item: rule,
     tag: "rules",
-    space: optionalSpace,
+    space: rep(alt([nl, space])),
   });
 
   return seq([rules, optionalSpace, omit(rep(semicolon, undefined, 0, 1))]);
