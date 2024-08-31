@@ -153,18 +153,31 @@ export function compact_tree(
           .filter((x) => x.length > 0);
 
         if (children.length === 0) return [];
-        if (children.length === 1 || ambiguity === "first")
-          return children[0];
+        if (children.length === 1 || ambiguity === "first") return children[0];
         if (ambiguity === "error") throw new Error("Ambiguous parse tree");
         if (packedAbove) return children.flat();
 
-        return addPos(
-          {
-            children: children.flat(),
-            type: "packed",
-          },
-          e
-        );
+        // this works for http://localhost:5173/?g=%3CE%3E+%3D+%3C%22%28%22%3E+E+%3C%22%29%22%3E+%7C+mul+%7C+add+%7C+sub+%7C+num%0Amul+%3D+E+%3C%22*%22%3E+E%0Aadd+%3D+E+%3C%22%2B%22%3E+E%0Asub+%3D+E+%3C%22-%22%3E+E%0Anum+%3D+%23%22%5C%5Cd%22&t=1%2B2*3%2B4&all=1&ranges=
+        if (children.every((x) => x.length === 1)) {
+          return addPos(
+            {
+              children: children.flat(),
+              type: "packed",
+            },
+            e
+          );
+        }
+
+        // this works for http://localhost:5173/?g=E+%3D+E+%28%22%2B%22+%7C+%22*%22%29+E+%7C+%221%22&t=1%2B1%2B1&all=1&ranges=1
+        return children.map((x) => {
+          return addPos(
+            {
+              children: x,
+              type: "packed",
+            },
+            e
+          );
+        });
       }
       case "Omit":
         return [];

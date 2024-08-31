@@ -4,7 +4,7 @@
     "target": "ES2022",
     "useDefineForClassFields": true,
     "module": "node16",
-    "lib": ["ES2022"],
+    "lib": ["ES2022", "DOM"],
     "skipLibCheck": true,
 
     /* Bundler mode */
