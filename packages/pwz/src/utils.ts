@@ -84,7 +84,10 @@ export function compact_tree(
 
         if (!e.e.tag && !e.e.sym && e.e.exps.length === 0) return [];
 
-        if (e.e.exps.length === 0) return addPos({ value: e.e.sym }, e);
+        if (e.e.exps.length === 0)
+          return e.e.tag
+            ? addPos({ tag: e.e.tag, value: e.e.sym }, e)
+            : addPos({ value: e.e.sym }, e);
 
         const children = e.e.exps.map(rec).flat();
         if (

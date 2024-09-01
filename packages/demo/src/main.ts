@@ -15,6 +15,7 @@ const errorMessage = document.querySelector("#errorMessage")!;
 const allTrees = document.querySelector("#allTrees")! as HTMLInputElement;
 const allTreesLabel = document.querySelector("#allTreesLabel")!;
 const ranges = document.querySelector("#ranges")! as HTMLInputElement;
+const values = document.querySelector("#values")! as HTMLInputElement;
 const download = document.querySelector("#download")! as HTMLButtonElement;
 
 let panZoomInstance: PanZoomUi;
@@ -33,6 +34,7 @@ if (grammar) grammar.textContent = value;
 text.textContent = p.get("t") || "1+2*3+4";
 allTrees.checked = Boolean(p.get("all"));
 ranges.checked = Boolean(p.get("ranges"));
+values.checked = Boolean(p.get("values"));
 
 import * as monaco from "monaco-editor";
 import { bnfLanguage } from "./bnfLanguage";
@@ -75,6 +77,7 @@ async function process(valid = true) {
   const textValue = text.value;
   const showAlltrees = allTrees.checked;
   const showRanges = ranges.checked;
+  const showValues = values.checked;
 
   if (valid) {
     try {
@@ -83,7 +86,7 @@ async function process(valid = true) {
 
       const tree = await parseClient(grammarValue, textValue, {
         ambiguity: showAlltrees ? "sppf" : "first",
-        showPos: showRanges
+        showPos: showRanges,
       });
 
       if (panZoomInstance) panZoomInstance.off();
@@ -93,7 +96,7 @@ async function process(valid = true) {
         error.classList.remove("hidden");
         errorMessage.textContent = "Can't parse";
       } else {
-        result.innerHTML = renderDot(treeToDot(tree, showRanges));
+        result.innerHTML = renderDot(treeToDot(tree, showRanges, showValues));
         const element = result.firstElementChild;
 
         // @ts-expect-error
@@ -114,6 +117,7 @@ async function process(valid = true) {
   p.set("t", textValue);
   p.set("all", showAlltrees ? "1" : "");
   p.set("ranges", showRanges ? "1" : "");
+  p.set("values", showValues ? "1" : "");
   window.history.replaceState({}, "", u);
 }
 
@@ -127,6 +131,7 @@ grammar?.addEventListener("keyup", () => process());
 text.addEventListener("keyup", () => process());
 allTrees.addEventListener("change", () => process());
 ranges.addEventListener("change", () => process());
+values.addEventListener("change", () => process());
 download.addEventListener("click", () =>
   downloadString(
     result.firstElementChild?.outerHTML || "",

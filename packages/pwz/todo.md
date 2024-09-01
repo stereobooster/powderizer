@@ -39,7 +39,7 @@ TODO:
   - https://chevrotain.io/performance/
     - https://chevrotain.io/playground/
   - https://langium.org/
-- [ ] show value in tree?
+- [x] show value in tree
 - [ ] show all trees one by one?
 - [ ] revamp tests
   - Alt in Alt

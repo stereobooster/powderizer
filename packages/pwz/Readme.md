@@ -73,5 +73,10 @@ And tree manipulation extension
 ## Tree-shape manipulation
 
 1. `S = S "a" | ""`, `S = "a" S | ""`, `S = "a"*`
-2. `S = "a" ("," "a")*`, `S = "a" (<","> "a")*`, `S = ("a" ("," "a")*)?`
-3. 
+2. `S = i ("," i)*; i = "a"`, `S = i (<","> i)*; i = "a"`, `S = (i (<","> i)*)?; i = "a"`
+3. string example, JSON example
+
+## Issues and future improvements
+
+1. There is no reporting for syntax errors. It either can parse or can't, it doesn't give a clue why it can't parse. Which is the biggest pain point right now
+2. 

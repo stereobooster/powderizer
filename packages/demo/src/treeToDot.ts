@@ -2,12 +2,17 @@ import { SPPFLike } from "pwz";
 
 type Node = {
   // either tag or value
-  label: string;
+  tag: string;
+  value?: string;
   type: undefined | "packed";
   pos?: [number, number];
 };
 
-export function treeToDot(tree: SPPFLike, showRanges?: boolean): string {
+export function treeToDot(
+  tree: SPPFLike,
+  showRanges?: boolean,
+  showValues?: boolean
+): string {
   const nodes = new Map<string, Node>();
   const edges = new Map<string, string>();
 
@@ -21,7 +26,12 @@ export function treeToDot(tree: SPPFLike, showRanges?: boolean): string {
     // const id = `${ambigious ? prefix : tree.tag}_${tree.pos[0]}_${tree.pos[1]}`;
 
     nodes.set(id, {
-      label: tree.tag || tree.value || "",
+      tag: tree.tag || "",
+      value: tree.children
+        ? tree.children.length === 0
+          ? ""
+          : undefined
+        : tree.value,
       type: tree.type,
       pos: tree.pos,
     });
@@ -43,11 +53,11 @@ export function treeToDot(tree: SPPFLike, showRanges?: boolean): string {
   return `digraph AST {
     ${Array.from(nodes.entries())
       .map(
-        ([id, { label, type, pos }]) =>
-          `${id}[label="${label}${
-            showRanges && pos ? ` (${pos[0]}, ${pos[1]})` : ""
-          }" ${
-            type !== "packed" ? "shape=rect style=rounded" : "shape=point"
+        ([id, { tag, value, type, pos }]) =>
+          `${id}[label="{${showValues ? tag : tag || value || ""}${showValues && value !== undefined ? `| ${value}` : ""}${
+            showRanges && pos ? `| (${pos[0]}, ${pos[1]})` : ""
+          }}" ${
+            type !== "packed" ? "shape=record style=rounded" : "shape=point"
           } ${type !== "packed" ? "height=0.3" : ""} tooltip="${
             showRanges && pos ? ` (${pos[0]}, ${pos[1]})` : " "
           }"]`
