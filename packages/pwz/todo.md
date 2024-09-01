@@ -16,6 +16,7 @@ TODO:
 - [x] Option to show `pos`
 - [x] Ambiguous trees resolution
 - [x] demo site
+- [x] show value in tree
 - add BNF grammar with regular extension
   - [x] evaluator
   - [x] support precedence for `a b | c`
@@ -39,8 +40,6 @@ TODO:
   - https://chevrotain.io/performance/
     - https://chevrotain.io/playground/
   - https://langium.org/
-- [x] show value in tree
-- [ ] show all trees one by one?
 - [ ] revamp tests
   - Alt in Alt
   - Seq in Seq
@@ -50,13 +49,14 @@ TODO:
   - ambigious
   - math expression unambigious
 - [ ] publish npm package
+- [ ] show all trees one by one?
 - [ ] Lisp parser
   - MAL
 - [ ] compare against [instaparsejs](https://github.com/stereobooster/instaparsejs)
 - [ ] why it produces only one tree and not array of trees?
 - [ ] error reporting?
 - [ ] functions/macros, import
-  - stdlib, like quoted string, delimited list, or [rosie](https://gitlab.com/rosie-pattern-language/rosie/-/blob/master/doc/rpl.md)
+  - stdlib, like quoted string, delimited list
 - [ ] limited (without recursion) negation
 - [ ] negative lookahead
 - [ ] positive lookahead
