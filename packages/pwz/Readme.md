@@ -1,64 +1,77 @@
-TODO:
+# Parsing with zippers
 
-- [x] add positions to node
-- [x] add visualization of tree
-- [x] add labels to node
-- [x] compact tree
-- [x] count_trees
-- [x] first_tree
-- [x] add kleene star
-- [x] add omit node
-- [x] add lex node
-- [x] add regexp node
-- [x] add Kleene star general (`a+`, `a?`, `a{2}`, `a{3,4}`)
-- [x] option to collapse unnamed `Tok` into higher named node
-- [x] support strings, arrays
-- [x] Option to show `pos`
-- [x] Ambiguous trees resolution
-- [x] demo site
-- add BNF grammar with regular extension
-  - [x] evaluator
-  - [x] support precedence for `a b | c`
-  - [x] support kleene star `a*`, `a+`, `a?`
-  - [x] support [quantifiers](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Guide/Regular_expressions/Quantifiers) `x{n}`, `x{n,}`, `x{n,m}`
-  - [x] support hidden nodes `<a> = ...`
-  - [x] support omitted nodes `a <b> c`
-  - [x] support reg nodes `#"a"`
-    - [x] escape function for regular expressions
-  - [x] support lex nodes
-  - [x] grammar in grammar
-  - [x] Option to split strings in `seq([...tok..])`
-  - [x] support optional `;` in the end
-  - [x] support optional `\n` and ` ` everywhere
-  - [x] support optional `\n` and ` ` in `()`, `<>`, `[]`
-  - [ ] comments?
-  - [ ] multi-char regexps? (accumulate striing?)
-- [ ] add tests
-  - Alt in Alt
-  - Seq in Seq
-  - Alt in Seq
-  - Seq in Alt
-  - left / right recursion
-  - ambigious
-  - math expression unambigious
-- [ ] readme
-- [ ] publish npm package
-- [ ] Lisp parser
-  - MAL
-- [ ] compare against [instaparsejs](https://github.com/stereobooster/instaparsejs)
-- [ ] why it produces only one tree and not array of trees?
-- [ ] error reporting?
-- [ ] functions/macros, import
-  - stdlib, like quoted string, delimited list, or [rosie](https://gitlab.com/rosie-pattern-language/rosie/-/blob/master/doc/rpl.md)
-- [ ] limited (without recursion) negation
-- [ ] negative lookahead
-- [ ] positive lookahead
-- [ ] ordered choice
-- [ ] disambiguation filters
-- [ ] all_trees (possible to do with zipper)
-- [ ] compact_tree - add options (to avoid walking tree again)
-  - [ ] to count trees
-  - [ ] to extract first tree
-- [ ] add any node
-- [ ] maybe remove tag from all except `seq`? Or add tag everywhere?
-- [ ] do I need to support [`Iterable<X>`](https://www.typescriptlang.org/docs/handbook/iterators-and-generators.html)?
+This is yet another parser, but with some unique features.
+
+1. **The core algorithm is about 200 lines of code** (excluding extensions and type signatures). Which makes it suitable for learning about parsing and easy to extend (which I did). It is directly taken from the [Parsing with Zippers (Functional Pearl)](https://dl.acm.org/doi/pdf/10.1145/3408990). I recommend to read it - it is quite short and explains algorithm pretty well. Or watch [this video](https://www.youtube.com/watch?v=6Wi-Kc6LDhc).
+2. It can handle **left recursion** and **ambiguous grammars**. Which makes it easier to use for newbies. One doesn't need to bend their grammar in order to fit restrictions of an algorithm.
+3. Extensions to the core algorithm add ability to **express shape of the desired tree** without need to massage it after parsing. Which makes it trully portable grammar - where is other parsers may need additional augmentation (A in ABNF) in hosting language.
+4. Can work with lexer (array of tokens as input) and without (array of chars, or string), so called scannerless parser.
+
+As of now this is rather proof of concept of the idea. Parser works, but it speed is probably not the best.
+
+## Backstory
+
+I was looking for approachable parser. I read couple of papers about parsing and it is quite hard to understand what is happening there.
+
+Then I found [Parsing with Derivatives (A Functional Pearl)](https://matt.might.net/papers/might2011derivatives.pdf). This algorithm was easy to follow. I managed to write [my first parser](https://github.com/stereobooster/parsing-with-derivalives). I learned a lot about parsers and formal grammars. Unfortunately algorithm is quite slow and doesn't produce tree in the shape that I want. I left it there
+
+Later I found another paper [Parsing with Zippers (Functional Pearl)](https://dl.acm.org/doi/pdf/10.1145/3408990), which is the twist to the first paper. It promised to be more performant and I figured I can manipulate tree shape.
+
+So I [started my implementation](https://github.com/stereobooster/zipper). I wanted to build it from the ground up - to make sure I understand every bit. I implemented zippers, I implemented vizualization. Then I started experimenting with different extensions, like Kleene star, negative lookahed, ordered choice. I got carried away a bit.
+
+After all I created small [digital garden about parsing](https://parsing.stereobooster.com/). See:
+
+- [Zipper explanation](https://parsing.stereobooster.com/zipper/)
+- [Parsing with zipper playground](https://parsing.stereobooster.com/playground/)
+
+I had an idea about tree shape manipulation and adding PEG operators (negative lookahead, ordered choice) when I was implementing first version of PwZ (back in 2023). But recently I discovered [Instaparse](https://github.com/Engelberg/instaparse) - which has all the same ideas. So I [tried to compile it to JS](https://github.com/stereobooster/instaparsejs). It works. But due to clojure runtime library weight is more than 200kb.
+
+Fast forward to the present day. I decided to write cleaner version from scratch, omit the bits I'm not sure about and publish as a library.
+
+## Grammar
+
+The parser itslef is in the category of interpreters (oposite to parser generators). It's API is based on parser combinators (traditional for functional language parsers). Though DSL (parser combinators) has some caveats - that is why they are not exposed and instead one needs to write grammar to use parser.
+
+Grammar itself is variation of [regular extensions to BNF](https://matt.might.net/articles/grammars-bnf-ebnf/). Or you can call it Chomsky CFG with regular extensions.
+
+Classical BNF (Backus–Naur form):
+
+```
+<S> ::= <S> "a" | ""
+```
+
+Chomsky CFG (context free grammar):
+
+```
+S -> S "a" | ""
+```
+
+Grammar used by this library:
+
+```
+S = S "a" | ""
+```
+
+- ` ` (space) - concatenation
+- `|` - unordered choice
+- `"a"` - token aka string, terminal, character, lexeme
+- `S` - symbol aka variable, non-terminal
+
+And regular extensions (extensions comming from regular expressions)
+
+- `a*` - Kleene star. Any number of `a`
+- `a+` - Kleene "plus". One or more `a`
+- `a?` - Kleene "question". Zero or one `a`
+- `a{...}` - [quantifiers](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Regular_expressions/Quantifier#description)
+- `#"[a-z]"` - regular expression
+
+And tree manipulation extension
+
+- `<a>` - [the same as in instaparse](https://github.com/Engelberg/instaparse#hiding-tags)
+- `[a]` - collapse all underlying nodes in one node with all strings concatenated
+
+## Tree-shape manipulation
+
+1. `S = S "a" | ""`, `S = "a" S | ""`, `S = "a"*`
+2. `S = "a" ("," "a")*`, `S = "a" (<","> "a")*`, `S = ("a" ("," "a")*)?`
+3. 

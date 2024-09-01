@@ -1,0 +1,71 @@
+TODO:
+
+- [x] add positions to node
+- [x] add visualization of tree
+- [x] add labels to node
+- [x] compact tree
+- [x] count_trees
+- [x] first_tree
+- [x] add kleene star
+- [x] add omit node
+- [x] add lex node
+- [x] add regexp node
+- [x] add Kleene star general (`a+`, `a?`, `a{2}`, `a{3,4}`)
+- [x] option to collapse unnamed `Tok` into higher named node
+- [x] support strings, arrays
+- [x] Option to show `pos`
+- [x] Ambiguous trees resolution
+- [x] demo site
+- add BNF grammar with regular extension
+  - [x] evaluator
+  - [x] support precedence for `a b | c`
+  - [x] support kleene star `a*`, `a+`, `a?`
+  - [x] support [quantifiers](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Guide/Regular_expressions/Quantifiers) `x{n}`, `x{n,}`, `x{n,m}`
+  - [x] support hidden nodes `<a> = ...`
+  - [x] support omitted nodes `a <b> c`
+  - [x] support reg nodes `#"a"`
+    - [x] escape function for regular expressions
+  - [x] support lex nodes
+  - [x] grammar in grammar
+  - [x] Option to split strings in `seq([...tok..])`
+  - [x] support optional `;` in the end
+  - [x] support optional `\n` and ` ` everywhere
+  - [x] support optional `\n` and ` ` in `()`, `<>`, `[]`
+  - [ ] comments?
+  - [ ] multi-char regexps? (accumulate striing?)
+- [ ] readme
+  - examples of typical problems and solution in different popular parsers
+  - https://bestofjs.org/projects?tags=parsing
+  - https://chevrotain.io/performance/
+    - https://chevrotain.io/playground/
+  - https://langium.org/
+- [ ] show value in tree?
+- [ ] show all trees one by one?
+- [ ] revamp tests
+  - Alt in Alt
+  - Seq in Seq
+  - Alt in Seq
+  - Seq in Alt
+  - left / right recursion
+  - ambigious
+  - math expression unambigious
+- [ ] publish npm package
+- [ ] Lisp parser
+  - MAL
+- [ ] compare against [instaparsejs](https://github.com/stereobooster/instaparsejs)
+- [ ] why it produces only one tree and not array of trees?
+- [ ] error reporting?
+- [ ] functions/macros, import
+  - stdlib, like quoted string, delimited list, or [rosie](https://gitlab.com/rosie-pattern-language/rosie/-/blob/master/doc/rpl.md)
+- [ ] limited (without recursion) negation
+- [ ] negative lookahead
+- [ ] positive lookahead
+- [ ] ordered choice
+- [ ] disambiguation filters
+- [ ] all_trees (possible to do with zipper)
+- [ ] compact_tree - add options (to avoid walking tree again)
+  - [ ] to count trees
+  - [ ] to extract first tree
+- [ ] add any node
+- [ ] maybe remove tag from all except `seq`? Or add tag everywhere?
+- [ ] do I need to support [`Iterable<X>`](https://www.typescriptlang.org/docs/handbook/iterators-and-generators.html)?

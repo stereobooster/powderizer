@@ -23,11 +23,12 @@ const u = new URL(window.location.toString());
 const p = u.searchParams;
 const value =
   p.get("g") ||
-  `<E> = <"("> E <")"> | mul | add | sub | num
+  `EXP = E
+<E> = <"("> E <")"> | mul | add | sub | num
 mul = E <"*"> E
 add = E <"+"> E
 sub = E <"-"> E
-num = #"\\\\d"`;
+num = [#"\\\\d"+]`;
 if (grammar) grammar.textContent = value;
 text.textContent = p.get("t") || "1+2*3+4";
 allTrees.checked = Boolean(p.get("all"));
