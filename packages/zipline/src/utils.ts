@@ -140,8 +140,11 @@ export function compact_tree(
           );
         }
 
-        if (e.e.tag && e.e.exps.length !== 1)
-          throw new Error("lost named node");
+        if (e.e.tag && e.e.exps.length !== 1) {
+          // can be triggered by S = S | "a"
+          // unless this exception it would trigger "too much recursion" error anyway
+          throw new Error("Lost named node. Tip: check if there is direct recursion");
+        }
 
         const children = e.e.exps
           .map((e_) => {

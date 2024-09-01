@@ -1,4 +1,4 @@
-import { SPPFLike } from "pwz";
+import { SPPFLike } from "zipline";
 
 type Node = {
   // either tag or value

@@ -1,11 +1,11 @@
 {
-  "name": "pwz",
+  "name": "zipline",
   "version": "0.0.1",
   "description": "parsing with zippers",
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/stereobooster/pwz.git",
-    "directory": "packages/pwz"
+    "url": "git+https://github.com/stereobooster/zipline.git",
+    "directory": "packages/zipline"
   },
   "author": "stereobooster",
   "license": "MIT",

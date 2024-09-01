@@ -35,12 +35,12 @@ importers:
       monaco-editor:
         specifier: ^0.50.0
         version: 0.50.0
-      pwz:
-        specifier: workspace:*
-        version: link:../pwz
       svgo:
         specifier: ^3.3.2
         version: 3.3.2
+      zipline:
+        specifier: workspace:*
+        version: link:../zipline
     devDependencies:
       '@tailwindcss/forms':
         specifier: ^0.5.7
@@ -67,7 +67,7 @@ importers:
         specifier: ^1.1.0
         version: 1.1.0(monaco-editor@0.50.0)
 
-  packages/pwz: {}
+  packages/zipline: {}
 
 packages:
 

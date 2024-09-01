@@ -1,5 +1,5 @@
 import * as Comlink from "comlink";
-import { createParser, ParseOptions } from "pwz";
+import { createParser, ParseOptions } from "zipline";
 
 export function parseWorker(grammar: string, text: string, opt?: ParseOptions) {
   return createParser(grammar)(text, opt);
