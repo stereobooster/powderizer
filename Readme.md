@@ -1,4 +1,4 @@
-# Parsing with zippers
+# Zipline: parsing with zippers
 
 This is yet another parser, but with some unique features.
 
