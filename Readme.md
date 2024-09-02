@@ -72,9 +72,33 @@ And tree manipulation extension
 
 ## Tree-shape manipulation
 
-1. `S = S "a" | ""`, `S = "a" S | ""`, `S = "a"*`
-2. `S = i ("," i)*; i = "a"`, `S = i (<","> i)*; i = "a"`, `S = (i (<","> i)*)?; i = "a"`
-3. list example, string example, JSON example, eval example
+Simplest example. Grammar: `S = "a"`. Input: `a`
+
+![](./examples/1.svg)
+
+It produces exactly one node with tag `S` and value `a`.
+
+Now let's try sequences (fixed length). Input `aaa`
+
+| `S = "a" "a" "a"`                       | `S = A A A; A = "a"`    | `S = A A A; <A> = "a"`  |
+| --------------------------------------- | ----------------------- | ----------------------- |
+| ![](./examples/2_1.svg)                 | ![](./examples/2_2.svg) | ![](./examples/2_3.svg) |
+| Pay attention there are no tags on `a`s |                         |                         |
+
+Sequences unlimited length. Input `aaa`
+
+| `S = S "a" \| ""`       | `S = "a" S \| ""`       | `S = "a"*`              |
+| ----------------------- | ----------------------- | ----------------------- |
+| ![](./examples/3_1.svg) | ![](./examples/3_2.svg) | ![](./examples/3_3.svg) |
+
+More practical example - delimited list. For example, list of arguments in function call `foo(a,a,a)`. Input: `a,a,a`
+
+| `S = A ("," A)*; A = "a"` | `S = A (<","> A)*; A = "a"` | `S = (A (<","> A)*)?; A = "a"` |
+| ------------------------- | --------------------------- | ------------------------------ |
+| ![](./examples/4_1.svg)   | ![](./examples/4_2.svg)     | ![](./examples/4_2.svg)        |
+|                           |                             | Allows zero items in the list  |
+
+Pay attention how `*` and `<>` allows precisely recreate tree structure without need to explicitly remove some nodes or flatten tree.
 
 ## Issues and future improvements
 
@@ -82,3 +106,20 @@ And tree manipulation extension
 2. I want to investigate idea of macros (or functions), like in [Rosie](https://gitlab.com/rosie-pattern-language/rosie/-/blob/master/doc/rpl.md)
 3. I wonder if it is possible to implement other operators, like negative lookahead, ordered choice, backreferences, limited negation.
 4. What about disambiguation filters?
+
+## TODO
+
+Show full example for JSON.
+
+```
+Json = JsonItem
+<JsonItem> = Null | True | False | Array | Object | Integer | String
+Null = <"n" "u" "l" "l">
+True = <"t" "r" "u" "e">
+False = <"f" "a" "l" "s" "e">
+Array = <"["> (JsonItem (<","> JsonItem)*)? <"]">
+Object = <"{"> (KeyValue (<","> KeyValue)*)? <"}">
+KeyValue = String <":"> JsonItem
+Integer = #"\\d"+
+String = <"\""> [#"[^\"]"*] <"\"">
+```

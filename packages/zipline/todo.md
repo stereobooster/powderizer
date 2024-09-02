@@ -48,6 +48,7 @@ TODO:
   - left / right recursion
   - ambigious
   - math expression unambigious
+- [ ] publish demo
 - [ ] publish npm package
 - [ ] show all trees one by one?
 - [ ] Lisp parser
