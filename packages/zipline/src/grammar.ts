@@ -339,9 +339,9 @@ export function evaluate(tree: GrammarNode, opts?: EvaluateOptions) {
           ? seq([omit(eval_(tree.children[0]))], name)
           : omit(eval_(tree.children[0]));
       case "regexp":
-        return name
-          ? seq([reg(new RegExp(tree.value))], name)
-          : reg(new RegExp(tree.value));
+        // const regexp = new RegExp(tree.value.replaceAll(/\\/g, "\\\\"));
+        const regexp = new RegExp(tree.value);
+        return name ? seq([reg(regexp)], name) : reg(regexp);
       case "lex":
         if (tree.children === undefined || tree.children.length !== 1)
           throw new Error("lex should have 1 item");

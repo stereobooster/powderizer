@@ -107,12 +107,12 @@ Pay attention how `*` and `<>` allows precisely recreate tree structure without 
 3. I wonder if it is possible to implement other operators, like negative lookahead, ordered choice, backreferences, limited negation.
 4. What about disambiguation filters?
 
-## TODO
+## JSON example
 
-Show full example for JSON
+Full JSON grammar except string (it is not according [spec](https://www.json.org/json-en.html))
 
 ```
-json = ws value ws
+<json> = ws value ws
 <value> = null | true | false | array | object | number | string
 null = <"null">
 true = <"true">
@@ -130,4 +130,6 @@ string = <"\""> [#"[^\"]"*] <"\"">
 <ws> = <#"\\s"*>
 ```
 
-- [ ] string according to [JSON spec](https://www.json.org/json-en.html)
+Parse tree for `{"i": 1, "s": "a", "a": [], "f": -0.1E+1, "o": {}}`
+
+![](./examples/5.svg)
