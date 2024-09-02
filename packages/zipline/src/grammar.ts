@@ -115,7 +115,9 @@ export function rules() {
   // todo: support \r\n
   const nl = tok("\n");
   // note: \s includes \n and \r https://developer.mozilla.org/en-US/docs/Web/JavaScript/Guide/Regular_expressions/Character_classes
-  const space = reg(/[\f\t\v\u0020\u00a0\u1680\u2000-\u200a\u2028\u2029\u202f\u205f\u3000\ufeff]/);
+  const space = reg(
+    /[\f\t\v\u0020\u00a0\u1680\u2000-\u200a\u2028\u2029\u202f\u205f\u3000\ufeff]/
+  );
   const spaces = rep(space);
   const optionalSpace = omit(rep(space));
   const integer = rep(reg(/[0-9]/), "integer", 1);
@@ -211,11 +213,13 @@ type GrammarExp = {
 
 type GrammarNode = GrammarTok | GrammarExp;
 
-type EvaluateOptions = {
+export type EvaluateOptions = {
   splitStringTokens?: boolean;
 };
 
 export function evaluate(tree: GrammarNode, opts?: EvaluateOptions) {
+  const splitStringTokens =
+    opts?.splitStringTokens === undefined ? true : opts?.splitStringTokens;
   if (tree === undefined) throw new Error("Can't parse grammar");
   const symbols: Record<string, Exp> = Object.create(null);
   const tokens: Record<string, Exp> = Object.create(null);
@@ -264,7 +268,7 @@ export function evaluate(tree: GrammarNode, opts?: EvaluateOptions) {
         return exp;
       }
       case "token":
-        if (opts?.splitStringTokens) {
+        if (splitStringTokens) {
           const valueUnicode = Array.from(tree.value);
           if (valueUnicode.length > 1) {
             return seq(
@@ -370,10 +374,10 @@ export function parseGrammar(grammar: string) {
   return parse(grammar.trim(), rules()) as any as GrammarNode;
 }
 
-export function createParser(grammar: string, evalOpts?: EvaluateOptions) {
+export function createParser(grammar: string) {
   const grammarTree = parseGrammar(grammar);
-  return (ts: string | string[], opts?: ParseOptions) => {
-    const gramar = evaluate(grammarTree, evalOpts);
+  return (ts: string | string[], opts?: ParseOptions & EvaluateOptions) => {
+    const gramar = evaluate(grammarTree, opts);
     return parse(ts, gramar, opts);
   };
 }

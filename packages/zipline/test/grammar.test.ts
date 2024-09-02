@@ -135,16 +135,16 @@ describe("delimitedList", () => {
 });
 
 describe("evaluate", () => {
-  it("one rule tok with splitStringTokens", () => {
-    const grammar1 = evaluate(parseGrammar(`S = "aaa"`), {
-      splitStringTokens: true,
-    });
+  it("one rule tok", () => {
+    const grammar1 = evaluate(parseGrammar(`S = "aaa"`));
     const grammar2 = thriceA();
     expect(grammar1).toEqual(grammar2);
   });
 
-  it("one rule tok", () => {
-    const grammar1 = evaluate(parseGrammar(`S = "aaa"`));
+  it("one rule tok without splitStringTokens", () => {
+    const grammar1 = evaluate(parseGrammar(`S = "aaa"`), {
+      splitStringTokens: false,
+    });
     const grammar2 = tripleA();
     expect(grammar1).toEqual(grammar2);
   });

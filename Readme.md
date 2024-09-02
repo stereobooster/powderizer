@@ -109,17 +109,25 @@ Pay attention how `*` and `<>` allows precisely recreate tree structure without 
 
 ## TODO
 
-Show full example for JSON.
+Show full example for JSON
 
 ```
-Json = JsonItem
-<JsonItem> = Null | True | False | Array | Object | Integer | String
-Null = <"n" "u" "l" "l">
-True = <"t" "r" "u" "e">
-False = <"f" "a" "l" "s" "e">
-Array = <"["> (JsonItem (<","> JsonItem)*)? <"]">
-Object = <"{"> (KeyValue (<","> KeyValue)*)? <"}">
-KeyValue = String <":"> JsonItem
-Integer = #"\\d"+
-String = <"\""> [#"[^\"]"*] <"\"">
+json = ws value ws
+<value> = null | true | false | array | object | number | string
+null = <"null">
+true = <"true">
+false = <"false">
+array = <"["> ws (value (ws <","> ws value)*)? ws <"]">
+object = <"{"> ws (member (ws <","> ws member)*)? ws <"}">
+member = string ws <":"> ws value
+number = [integer fraction? exponent?]
+onenine = #"[1-9]"
+digit = "0" | onenine
+integer = "-"? ("0" | onenine digit*)
+fraction = "." digit+
+exponent = ("E" | "e") ("+" | "-")? digit+
+string = <"\""> [#"[^\"]"*] <"\"">
+<ws> = <#"\\s"*>
 ```
+
+- [ ] string according to [JSON spec](https://www.json.org/json-en.html)
