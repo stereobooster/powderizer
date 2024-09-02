@@ -34,12 +34,7 @@ TODO:
   - [x] support optional `\n` and ` ` in `()`, `<>`, `[]`
   - [ ] comments?
   - [ ] multi-char regexps? (accumulate striing?)
-- [ ] readme
-  - examples of typical problems and solution in different popular parsers
-  - https://bestofjs.org/projects?tags=parsing
-  - https://chevrotain.io/performance/
-    - https://chevrotain.io/playground/
-  - https://langium.org/
+- [x] readme
 - [ ] revamp tests
   - Alt in Alt
   - Seq in Seq
@@ -50,6 +45,11 @@ TODO:
   - math expression unambigious
 - [ ] publish demo
 - [ ] publish npm package
+- [ ] examples of typical problems and solution in different popular parsers
+  - https://bestofjs.org/projects?tags=parsing
+  - https://chevrotain.io/performance/
+    - https://chevrotain.io/playground/
+  - https://langium.org/
 - [ ] show all trees one by one?
 - [ ] Lisp parser
   - MAL
