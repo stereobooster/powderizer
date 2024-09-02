@@ -91,7 +91,9 @@ Sequences unlimited length. Input `aaa`
 | ----------------------- | ----------------------- | ----------------------- |
 | ![](./examples/3_1.svg) | ![](./examples/3_2.svg) | ![](./examples/3_3.svg) |
 
-More practical example - delimited list. For example, list of arguments in function call `foo(a,a,a)`. Input: `a,a,a`
+### Delimited list
+
+For example, list of arguments in function call `foo(a,a,a)`. Input: `a,a,a`
 
 | `S = A ("," A)*; A = "a"` | `S = A (<","> A)*; A = "a"` | `S = (A (<","> A)*)?; A = "a"` |
 | ------------------------- | --------------------------- | ------------------------------ |
@@ -100,14 +102,15 @@ More practical example - delimited list. For example, list of arguments in funct
 
 Pay attention how `*` and `<>` allows precisely recreate tree structure without need to explicitly remove some nodes or flatten tree.
 
-## Issues and future improvements
+### Quoted string
 
-1. There is no reporting for syntax errors. It either can parse or can't, it doesn't give a clue why it can't parse. Which is the biggest pain point right now
-2. I want to investigate idea of macros (or functions), like in [Rosie](https://gitlab.com/rosie-pattern-language/rosie/-/blob/master/doc/rpl.md)
-3. I wonder if it is possible to implement other operators, like negative lookahead, ordered choice, backreferences, limited negation.
-4. What about disambiguation filters?
+Quite primitive implementation - doesn't support escape characters, like `\"`, `\\`, etc.
 
-## JSON example
+| `string = <"\""> (#"[^\"]")* <"\"">` | `string = [<"\""> (#"[^\"]")* <"\"">]` |
+| ------------------------------------ | -------------------------------------- |
+| ![](./examples/5_1.svg)              | ![](./examples/5_2.svg)                |
+
+### JSON example
 
 Full JSON grammar except string (it is not according [spec](https://www.json.org/json-en.html))
 
@@ -132,4 +135,11 @@ string = <"\""> [#"[^\"]"*] <"\"">
 
 Parse tree for `{"i": 1, "s": "a", "a": [], "f": -0.1E+1, "o": {}}`
 
-![](./examples/5.svg)
+![](./examples/6.svg)
+
+## Issues and future improvements
+
+1. There is no reporting for syntax errors. It either can parse or can't, it doesn't give a clue why it can't parse. Which is the biggest pain point right now
+2. I want to investigate idea of macros (or functions), like in [Rosie](https://gitlab.com/rosie-pattern-language/rosie/-/blob/master/doc/rpl.md)
+3. I wonder if it is possible to implement other operators, like negative lookahead, ordered choice, backreferences, limited negation.
+4. What about disambiguation filters?
