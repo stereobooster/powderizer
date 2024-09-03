@@ -143,3 +143,7 @@ Parse tree for `{"i": 1, "s": "a", "a": [], "f": -0.1E+1, "o": {}}`
 2. I want to investigate idea of macros (or functions), like in [Rosie](https://gitlab.com/rosie-pattern-language/rosie/-/blob/master/doc/rpl.md)
 3. I wonder if it is possible to implement other operators, like negative lookahead, ordered choice, backreferences, limited negation.
 4. What about disambiguation filters?
+
+## badges
+
+[![Netlify Status](https://api.netlify.com/api/v1/badges/9b635404-cb4b-45f1-805e-3ba6e5171f9d/deploy-status)](https://app.netlify.com/sites/radiant-torte-4c446b/deploys)

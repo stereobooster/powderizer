@@ -11,22 +11,22 @@ import { alt, reg, rep, seq, tok, recs, omit, lex } from "../src/dsl.js";
 import { leftRec, thriceA, tripleA } from "./test_samples.js";
 
 describe("quotedString", () => {
-  it("quoted string empty", () => {
+  it("empty", () => {
     const grammar = quotedString({ delimiter: '"', tag: "s" });
     expect(parse('""', grammar)).toEqual({ tag: "s", value: "" });
   });
 
-  it("quoted string not empty", () => {
+  it("not empty", () => {
     const grammar = quotedString({ delimiter: "'", tag: "s" });
     expect(parse("'abc'", grammar)).toEqual({ tag: "s", value: "abc" });
   });
 
-  it("quoted string with escape char 1", () => {
+  it("with escape char 1", () => {
     const grammar = quotedString({ delimiter: "'", tag: "s" });
     expect(parse("'a\\'c'", grammar)).toEqual({ tag: "s", value: "a'c" });
   });
 
-  it("quoted string with escape char 2", () => {
+  it("with escape char 2", () => {
     const grammar = quotedString({ delimiter: "'", tag: "s" });
     expect(parse("'a\\\\c'", grammar)).toEqual({ tag: "s", value: "a\\c" });
   });
@@ -135,13 +135,13 @@ describe("delimitedList", () => {
 });
 
 describe("evaluate", () => {
-  it("one rule tok", () => {
+  it("one rule string", () => {
     const grammar1 = evaluate(parseGrammar(`S = "aaa"`));
     const grammar2 = thriceA();
     expect(grammar1).toEqual(grammar2);
   });
 
-  it("one rule tok without splitStringTokens", () => {
+  it("one rule string without spliting", () => {
     const grammar1 = evaluate(parseGrammar(`S = "aaa"`), {
       splitStringTokens: false,
     });
@@ -149,25 +149,25 @@ describe("evaluate", () => {
     expect(grammar1).toEqual(grammar2);
   });
 
-  it("one rule seq", () => {
+  it("one rule Seq", () => {
     const grammar1 = evaluate(parseGrammar(`S = "a" "a" "a"`));
     const grammar2 = thriceA();
     expect(grammar1).toEqual(grammar2);
   });
 
-  it("one rule alt", () => {
+  it("one rule Alt", () => {
     const grammar1 = evaluate(parseGrammar(`S = "a" | "b"`));
     const grammar2 = alt([tok("a"), tok("b")], "S");
     expect(grammar1).toEqual(grammar2);
   });
 
-  it("one rule seq and alt", () => {
+  it("one rule Seq and Alt", () => {
     const grammar1 = evaluate(parseGrammar(`S = "a" | ("b" "c")`));
     const grammar2 = alt([tok("a"), seq([tok("b"), tok("c")])], "S");
     expect(grammar1).toEqual(grammar2);
   });
 
-  it("one rule rec", () => {
+  it("one rule recursive", () => {
     const grammar1 = evaluate(parseGrammar(`S = S "a"| ""`));
     const grammar2 = leftRec();
     expect(grammar1).toEqual(grammar2);
@@ -179,7 +179,7 @@ describe("evaluate", () => {
     expect(grammar1).toEqual(grammar2);
   });
 
-  it("two rules rec", () => {
+  it("two rules recursive", () => {
     const grammar1 = evaluate(parseGrammar(`A = "" | ("a" B);B = "b" | A`));
     const [grammar2] = recs((A, B) => [
       alt([tok(""), seq([tok("a"), B])], "A"),
@@ -211,7 +211,7 @@ describe("evaluate", () => {
     );
   });
 
-  it("tok directly in the body", () => {
+  it("Tok directly in the body", () => {
     const grammar1 = evaluate(parseGrammar(`S = "a"`));
     const grammar2 = seq([tok("a")], "S");
     expect(grammar1).toEqual(grammar2);
@@ -315,13 +315,13 @@ describe("evaluate", () => {
     expect(grammar1).toEqual(grammar2);
   });
 
-  it("lex", () => {
+  it("Lex", () => {
     const grammar1 = evaluate(parseGrammar(`S = ["a" "a"]`));
     const grammar2 = seq([lex(seq([tok("a"), tok("a")]))], "S");
     expect(grammar1).toEqual(grammar2);
   });
 
-  it("quotedString 1", () => {
+  it("quotedString", () => {
     const grammarGrammar = `s = <"\\""> [(#"[^\\"\\\\\\\\]" | <"\\\\"> "\\\\" | <"\\\\"> "\\"")*]  <"\\"">`;
     const grammar1 = evaluate(parseGrammar(grammarGrammar));
     const grammar2 = quotedString({ delimiter: '"', tag: "s" });

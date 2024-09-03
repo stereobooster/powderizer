@@ -35,16 +35,10 @@ TODO:
   - [ ] comments?
   - [ ] multi-char regexps? (accumulate striing?)
 - [x] readme
-- [ ] revamp tests
-  - Alt in Alt
-  - Seq in Seq
-  - Alt in Seq
-  - Seq in Alt
-  - left / right recursion
-  - ambigious
-  - math expression unambigious
-- [ ] publish demo
+- [x] publish demo
 - [ ] publish npm package
+- [ ] support `\n\r` in grammar
+- [ ] convert tot tests edge cases from `compact_tree`
 - [ ] examples of typical problems and solution in different popular parsers
   - https://bestofjs.org/projects?tags=parsing
   - https://chevrotain.io/performance/
@@ -54,7 +48,6 @@ TODO:
 - [ ] Lisp parser
   - MAL
 - [ ] compare against [instaparsejs](https://github.com/stereobooster/instaparsejs)
-- [ ] why it produces only one tree and not array of trees?
 - [ ] error reporting?
 - [ ] functions/macros, import
   - stdlib, like quoted string, delimited list
@@ -66,7 +59,19 @@ TODO:
 - [ ] all_trees (possible to do with zipper)
 - [ ] compact_tree - add options (to avoid walking tree again)
   - [ ] to count trees
-  - [ ] to extract first tree
+  - [x] to extract first tree
 - [ ] add any node
 - [ ] maybe remove tag from all except `seq`? Or add tag everywhere?
 - [ ] do I need to support [`Iterable<X>`](https://www.typescriptlang.org/docs/handbook/iterators-and-generators.html)?
+
+Strange examples:
+
+- `<S> = "a"*` can't parse ""
+- `<S> = <"a">*` can't parse anything
+- `S = S* "a" | ""` doesn't work
+- `S = S* "a"` show all trees
+- `<S> = S "a" | ""`
+- `S = S <"a"> | ""`
+- `S = "a"*` "a" vs "aa"
+- `S = [S] "a" | ""`
+- `S = S? "a"`

@@ -100,7 +100,7 @@ describe("parse", () => {
     expect(tree1).toEqual(tree2);
   });
 
-  it("basic grammar", () => {
+  it("show positions", () => {
     const grammar = thriceA();
     const tree = parse("aaa", grammar, { showPos: true })!;
     expect(count_trees(tree)).toBe(1);
