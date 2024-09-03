@@ -1,4 +1,4 @@
-# Zipline: parsing with zippers
+# Powderizer: parsing with zippers
 
 This is yet another parser, but with some unique features.
 

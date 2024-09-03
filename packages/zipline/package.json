@@ -1,11 +1,11 @@
 {
-  "name": "zipline",
+  "name": "powderizer",
   "version": "0.0.1",
   "description": "parsing with zippers",
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/stereobooster/zipline.git",
-    "directory": "packages/zipline"
+    "url": "git+https://github.com/stereobooster/powderizer.git",
+    "directory": "packages/powderizer"
   },
   "author": "stereobooster",
   "license": "MIT",

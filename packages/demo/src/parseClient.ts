@@ -1,6 +1,6 @@
 import memoize from "micro-memoize";
 import * as Comlink from "comlink";
-import { ParseOptions } from "zipline";
+import { ParseOptions } from "powderizer";
 
 function timeout(t: number) {
   return new Promise((_resolve, reject) => {
