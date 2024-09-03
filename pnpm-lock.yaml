@@ -37,7 +37,7 @@ importers:
         version: 0.50.0
       powderizer:
         specifier: workspace:*
-        version: link:../zipline
+        version: link:../powderizer
       svgo:
         specifier: ^3.3.2
         version: 3.3.2
@@ -67,7 +67,7 @@ importers:
         specifier: ^1.1.0
         version: 1.1.0(monaco-editor@0.50.0)
 
-  packages/zipline: {}
+  packages/powderizer: {}
 
 packages:
 
