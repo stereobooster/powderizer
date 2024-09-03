@@ -1,17 +1,24 @@
 import type { Exp } from "./core.js";
 
-export function count_trees(tree: SPPFLike): number {
-  if (tree.children && tree.children.length > 0) {
-    return tree.children[0].type === "packed"
-      ? tree.children.map(count_trees).reduce((a, b) => a + b, 0)
-      : tree.children.map(count_trees).reduce((a, b) => a * b, 1);
-  }
-  return 1;
+export function count_trees(tree: AmbiguousTree): number {
+  const rec = (tree: AmbiguousTree): number => {
+    if (tree.ambiguous) {
+      return tree.children.map(rec).reduce((a, b) => a + b, 0);
+    }
+
+    if (tree.children && tree.children.length > 0) {
+      return tree.children.map(rec).reduce((a, b) => a * b, 1);
+    }
+
+    return 1;
+  };
+
+  return rec(tree);
 }
 
-export function first_tree(tree: SPPFLike): SPPFLike {
+export function first_tree(tree: AmbiguousTree): AmbiguousTree {
   if (tree.children && tree.children.length > 0) {
-    return tree.children[0].type === "packed"
+    return tree.children[0].ambiguous
       ? { ...tree, children: tree.children[0].children.map(first_tree) }
       : { ...tree, children: tree.children.map(first_tree) };
   }
@@ -19,26 +26,26 @@ export function first_tree(tree: SPPFLike): SPPFLike {
 }
 
 // https://github.com/stereobooster/instaparsejs/blob/main/packages/instaparsejs/instaparse.d.ts
-export type SPPFLike =
+export type AmbiguousTree =
   | {
-      type?: undefined;
+      ambiguous?: false;
       tag: string;
       pos?: [number, number];
       value?: undefined;
-      children: SPPFLike[];
+      children: AmbiguousTree[];
     }
   | {
-      type?: undefined;
+      ambiguous?: false;
       tag?: string;
       pos?: [number, number];
       value: string;
       children?: undefined;
     }
   | {
-      type: "packed";
+      ambiguous: true;
       tag?: undefined;
       pos?: [number, number];
-      children: SPPFLike[];
+      children: AmbiguousTree[];
       value?: undefined;
     };
 
@@ -64,15 +71,15 @@ export function compact_tree(
     showPos = false,
     ambiguity = "first",
   }: CompactOptions = {}
-): SPPFLike {
+): AmbiguousTree {
   const addPos = showPos
-    ? (node: SPPFLike, e: Exp) => {
+    ? (node: AmbiguousTree, e: Exp) => {
         node.pos = [e.e.start_pos!, e.e.end_pos!];
         return node;
       }
-    : (node: SPPFLike, _e: Exp) => node;
+    : (node: AmbiguousTree, _e: Exp) => node;
 
-  function rec(e: Exp): SPPFLike | SPPFLike[] {
+  function rec(e: Exp): AmbiguousTree | AmbiguousTree[] {
     switch (e.e.type) {
       case "Rep":
       case "Tok":
@@ -116,6 +123,22 @@ export function compact_tree(
       case "Alt": {
         if (e.e.tag && e.e.exps.length === 1) {
           const children = e.e.exps.map(rec).flat();
+
+          // http://localhost:5173/?g=E+%3D+E+%28%22%2B%22+%7C+%22*%22%29+E+%7C+%221%22&t=1%2B1%2B1&all=1&ranges=1&values=
+          if (
+            children.length === 1 &&
+            children[0].ambiguous &&
+            children[0].children.every((ch) => !ch.tag && ch.children)
+          ) {
+            return {
+              ...children[0],
+              children: children[0].children.map((ch) => {
+                ch.tag = e.e.tag;
+                return ch;
+              }),
+            };
+          }
+
           if (
             collapseTokens &&
             children.length === 1 &&
@@ -143,7 +166,9 @@ export function compact_tree(
         if (e.e.tag && e.e.exps.length !== 1) {
           // can be triggered by S = S | "a"
           // unless this exception it would trigger "too much recursion" error anyway
-          throw new Error("Lost named node. Tip: check if there is direct recursion");
+          throw new Error(
+            "Lost named node. Tip: check if there is direct recursion"
+          );
         }
 
         const children = e.e.exps
@@ -161,31 +186,35 @@ export function compact_tree(
         if (children.every((x) => x.length === 1)) {
           // http://localhost:5173/?g=EXP+%3D+E%3B%0A%3CE%3E+%3D+%3C%22%28%22%3E+E+%3C%22%29%22%3E+%7C+mul+%7C+add+%7C+sub+%7C+num%0Amul+%3D+E+%3C%22*%22%3E+E%0Aadd+%3D+E+%3C%22%2B%22%3E+E%0Asub+%3D+E+%3C%22-%22%3E+E%0Anum+%3D+%23%22%5C%5Cd%22&t=1%2B2*3%2B4&all=1&ranges=1
           const ch = children.flatMap((x) =>
-            x[0].type === "packed" ? x[0].children : x[0]
+            x[0].ambiguous ? x[0].children : x[0]
           );
           return addPos(
             {
               children: ch,
-              type: "packed",
+              ambiguous: true,
             },
             e
           );
         }
 
-        return children.flatMap((ch) => {
-          // don't have examples for this
-          if (ch.length === 0) return [];
-          // don't have examples for this
-          if (ch.length === 1) return ch[0];
-          // http://localhost:5173/?g=E+%3D+E+%28%22%2B%22+%7C+%22*%22%29+E+%7C+%221%22&t=1%2B1%2B1&all=1&ranges=1
-          return addPos(
-            {
-              children: ch,
-              type: "packed",
-            },
-            e
-          );
-        });
+        // http://localhost:5173/?g=E+%3D+E+%28%22%2B%22+%7C+%22*%22%29+E+%7C+%221%22&t=1%2B1%2B1&all=1&ranges=1&values=
+        return addPos(
+          {
+            children: children.flatMap((ch) => {
+              // don't have examples for this
+              if (ch.length === 0) return [];
+              return addPos(
+                {
+                  children: ch,
+                  tag: "",
+                },
+                e
+              );
+            }),
+            ambiguous: true,
+          },
+          e
+        );
       }
       case "Omit":
         return [];
@@ -199,12 +228,13 @@ export function compact_tree(
     // due to compaction tree completley disapeared
     // like <S> = "a"* for empty string
     // or <S> = <"a">* for any string of a's
-    if (result.length === 0) return {
-      children: [],
-      tag: "",
-    };
+    if (result.length === 0)
+      return {
+        children: [],
+        tag: "",
+      };
     if (result.length <= 1) return result[0];
-    const rr: SPPFLike = {
+    const rr: AmbiguousTree = {
       children: result,
       tag: "",
     };

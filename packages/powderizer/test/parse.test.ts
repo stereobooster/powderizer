@@ -182,6 +182,7 @@ describe("parse", () => {
     expect(count_trees(tree)).toBe(2);
     expect(tree).toMatchInlineSnapshot(`
       {
+        "ambiguous": true,
         "children": [
           {
             "children": [
@@ -209,7 +210,7 @@ describe("parse", () => {
                 "value": "1",
               },
             ],
-            "type": "packed",
+            "tag": "E",
           },
           {
             "children": [
@@ -237,21 +238,33 @@ describe("parse", () => {
                 "tag": "E",
               },
             ],
-            "type": "packed",
+            "tag": "E",
           },
         ],
-        "tag": "E",
       }
     `);
 
     expect(first_tree(tree)).toMatchInlineSnapshot(`
       {
+        "ambiguous": true,
         "children": [
           {
             "children": [
               {
+                "children": [
+                  {
+                    "tag": "E",
+                    "value": "1",
+                  },
+                  {
+                    "value": "+",
+                  },
+                  {
+                    "tag": "E",
+                    "value": "1",
+                  },
+                ],
                 "tag": "E",
-                "value": "1",
               },
               {
                 "value": "+",
@@ -264,14 +277,34 @@ describe("parse", () => {
             "tag": "E",
           },
           {
-            "value": "+",
-          },
-          {
+            "children": [
+              {
+                "tag": "E",
+                "value": "1",
+              },
+              {
+                "value": "+",
+              },
+              {
+                "children": [
+                  {
+                    "tag": "E",
+                    "value": "1",
+                  },
+                  {
+                    "value": "+",
+                  },
+                  {
+                    "tag": "E",
+                    "value": "1",
+                  },
+                ],
+                "tag": "E",
+              },
+            ],
             "tag": "E",
-            "value": "1",
           },
         ],
-        "tag": "E",
       }
     `);
   });

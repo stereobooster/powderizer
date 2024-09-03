@@ -37,6 +37,7 @@ TODO:
 - [x] readme
 - [x] publish demo
 - [x] publish npm package
+- [ ] ambiguity nodes instead of packed nodes?
 - [ ] support `\n\r` in grammar
 - [ ] convert edge cases from `compact_tree` to tests
 - [ ] examples of typical problems and solution in different popular parsers
@@ -67,11 +68,4 @@ TODO:
 Strange examples:
 
 - `S = S* "a"` show all trees
-- `<S> = "a"*` can't parse ""
-- `<S> = <"a">*` can't parse anything
-- `S = S* "a" | ""` InternalError: too much recursion
-- `<S> = S "a" | ""`
-- `S = S <"a"> | ""`
-- `S = "a"*` "a" vs "aa"
-- `S = [S] "a" | ""`
-- `S = S? "a"`
+

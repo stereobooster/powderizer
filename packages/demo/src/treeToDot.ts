@@ -4,7 +4,7 @@ type Node = {
   // either tag or value
   tag: string;
   value?: string;
-  type: undefined | "packed";
+  ambiguous?: boolean;
   pos?: [number, number];
 };
 
@@ -26,7 +26,7 @@ export function treeToDot(
           ? ""
           : undefined
         : tree.value,
-      type: tree.type,
+      ambiguous: tree.ambiguous,
       pos: tree.pos,
     });
 
@@ -48,19 +48,15 @@ export function treeToDot(
 
   return `digraph AST {
     ${Array.from(nodes.entries())
-      .map(([id, { tag, value, type, pos }]) => {
+      .map(([id, { tag, value, ambiguous, pos }]) => {
         const label = `{${e(showValues ? tag : tag || value || "")}${
           showValues && value !== undefined ? `| ${e(value)}` : ""
         }${showRanges && pos ? `| (${pos[0]}, ${pos[1]})` : ""}}`;
 
         return `${id}[label="${label}" ${
-          type === "packed"
-            ? "shape=point"
-            : "shape=record style=rounded height=0.3"
+          ambiguous ? "shape=point" : "shape=record style=rounded height=0.3"
         } tooltip="${
-          showRanges && pos && type === "packed"
-            ? ` (${pos[0]}, ${pos[1]})`
-            : " "
+          showRanges && pos && ambiguous ? ` (${pos[0]}, ${pos[1]})` : " "
         }"]`;
       })
       .join("\n")}
