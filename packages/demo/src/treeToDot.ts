@@ -1,4 +1,4 @@
-import { SPPFLike } from "powderizer";
+import { AmbiguousTree } from "powderizer";
 
 type Node = {
   // either tag or value
@@ -9,14 +9,14 @@ type Node = {
 };
 
 export function treeToDot(
-  tree: SPPFLike,
+  tree: AmbiguousTree,
   showRanges?: boolean,
   showValues?: boolean
 ): string {
   const nodes = new Map<string, Node>();
   const edges = new Map<string, string>();
 
-  function rec(prefix: string, tree: SPPFLike, parentId?: string) {
+  function rec(prefix: string, tree: AmbiguousTree, parentId?: string) {
     const id = `${prefix}_${tree.pos?.[0]}_${tree.pos?.[1]}`;
 
     nodes.set(id, {

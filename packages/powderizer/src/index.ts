@@ -3,4 +3,4 @@ import { type EvaluateOptions } from "./grammar.js";
 
 export type ParseOptions = PO & EvaluateOptions;
 export { createParser } from "./grammar.js";
-export { type AmbiguousTree as SPPFLike } from "./utils.js";
+export { type AmbiguousTree as AmbiguousTree } from "./utils.js";

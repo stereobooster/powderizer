@@ -85,7 +85,7 @@ async function process(valid = true) {
       allTreesLabel.textContent = `Show all trees`;
 
       const tree = await parseClient(grammarValue, textValue, {
-        ambiguity: showAlltrees ? "sppf" : "first",
+        ambiguity: showAlltrees ? "ambiguous" : "first",
         showPos: showRanges,
       });
 

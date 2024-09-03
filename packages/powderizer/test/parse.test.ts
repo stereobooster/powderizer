@@ -178,7 +178,7 @@ describe("parse", () => {
 
   it("ambigious gramar", () => {
     const grammar = mathExp();
-    const tree = parse("1+1+1", grammar, { ambiguity: "sppf" })!;
+    const tree = parse("1+1+1", grammar, { ambiguity: "ambiguous" })!;
     expect(count_trees(tree)).toBe(2);
     expect(tree).toMatchInlineSnapshot(`
       {

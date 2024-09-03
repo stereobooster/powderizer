@@ -10,10 +10,10 @@ export function parse(str: string[] | string, e: Exp, opts?: ParseOptions) {
   if (r.length === 0) return;
   // I guess I made an error in translating algorithm from OCaml.
   // Because it suppose to produce array of trees.
-  // Instead it produces one tree with ambiguous node - conceptually similar to SPPF
+  // Instead it produces one tree with ambiguous nodes
   if (r.length > 1 && ambiguity !== "first") {
     // huh... it happens with consequent Kleene stars
-    if (ambiguity === "sppf")
+    if (ambiguity === "ambiguous")
       return compact_tree(
         {
           e: {

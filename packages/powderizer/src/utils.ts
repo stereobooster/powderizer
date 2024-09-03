@@ -56,8 +56,8 @@ export type CompactOptions = {
   | "first"
     /* error if there is ambiguity */
     | "error"
-    /* return all ambiguous trees in SPPF-like structure */
-    | "sppf";
+    /* return all ambiguous trees in one */
+    | "ambiguous";
   // probably bad idea
   // removeEmpty?: boolean;
 };

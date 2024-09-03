@@ -82,7 +82,7 @@ describe("tricky cases", () => {
     const grammar = `<E> = add | "1"
     add = E <"+"> E`;
     const p = createParser(grammar);
-    const t = p("1+1+1", { ambiguity: "sppf" });
+    const t = p("1+1+1", { ambiguity: "ambiguous" });
     expect(t?.ambiguous).toEqual(true);
     expect(t?.children?.length).toEqual(2);
     expect(count_trees(t!)).toEqual(2);
@@ -93,7 +93,7 @@ describe("tricky cases", () => {
     const grammar = `E = add | "1"
     add = E <"+"> E`;
     const p = createParser(grammar);
-    const t = p("1+1+1", { ambiguity: "sppf" });
+    const t = p("1+1+1", { ambiguity: "ambiguous" });
     expect(t?.ambiguous).toEqual(undefined);
     expect(t?.children?.length).toEqual(1);
     expect(count_trees(t!)).toEqual(2);
