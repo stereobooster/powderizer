@@ -38,7 +38,7 @@ TODO:
 - [x] publish demo
 - [x] publish npm package
 - [ ] support `\n\r` in grammar
-- [ ] convert tot tests edge cases from `compact_tree`
+- [ ] convert edge cases from `compact_tree` to tests
 - [ ] examples of typical problems and solution in different popular parsers
   - https://bestofjs.org/projects?tags=parsing
   - https://chevrotain.io/performance/
@@ -66,10 +66,10 @@ TODO:
 
 Strange examples:
 
+- `S = S* "a"` show all trees
 - `<S> = "a"*` can't parse ""
 - `<S> = <"a">*` can't parse anything
-- `S = S* "a" | ""` doesn't work
-- `S = S* "a"` show all trees
+- `S = S* "a" | ""` InternalError: too much recursion
 - `<S> = S "a" | ""`
 - `S = S <"a"> | ""`
 - `S = "a"*` "a" vs "aa"

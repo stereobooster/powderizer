@@ -196,6 +196,13 @@ export function compact_tree(
 
   const result = rec(e);
   if (Array.isArray(result)) {
+    // due to compaction tree completley disapeared
+    // like <S> = "a"* for empty string
+    // or <S> = <"a">* for any string of a's
+    if (result.length === 0) return {
+      children: [],
+      tag: "",
+    };
     if (result.length <= 1) return result[0];
     const rr: SPPFLike = {
       children: result,
