@@ -36,7 +36,7 @@ TODO:
   - [ ] multi-char regexps? (accumulate striing?)
 - [x] readme
 - [x] publish demo
-- [ ] publish npm package
+- [x] publish npm package
 - [ ] support `\n\r` in grammar
 - [ ] convert tot tests edge cases from `compact_tree`
 - [ ] examples of typical problems and solution in different popular parsers
