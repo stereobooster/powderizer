@@ -67,5 +67,6 @@ TODO:
 
 Strange examples:
 
-- `S = S* "a"` show all trees
+- [`S = S* "a"` show all trees](http://localhost:5173/?g=S+%3D+S*+%22a%22&t=aaa&all=1&ranges=1&values=)
+  - fixed in the last commit
 

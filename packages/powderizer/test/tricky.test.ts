@@ -61,6 +61,7 @@ describe("tricky cases", () => {
     });
   });
 
+  // http://localhost:5173/?g=S+%3D+%5BS%5D+%22a%22+%7C+%22%22&t=aaa&all=1&ranges=1&values=
   it('S = [S] "a" | ""', () => {
     const p = createParser('S = [S] "a" | ""');
     expect(p("aaa")).toEqual({
@@ -76,6 +77,7 @@ describe("tricky cases", () => {
     expect(() => p("aaa")).toThrow("");
   });
 
+  // http://localhost:5173/?g=%3CE%3E+%3D+add+%7C+%221%22%0Aadd+%3D+E+%3C%22%2B%22%3E+E&t=1%2B1%2B1&all=1&ranges=1&values=
   it("top node is packed", () => {
     const grammar = `<E> = add | "1"
     add = E <"+"> E`;
@@ -86,12 +88,14 @@ describe("tricky cases", () => {
     expect(count_trees(t!)).toEqual(2);
   });
 
+  // http://localhost:5173/?g=E+%3D+add+%7C+%221%22%0Aadd+%3D+E+%3C%22%2B%22%3E+E&t=1%2B1%2B1&all=1&ranges=1&values=
   it("top node is not packed", () => {
     const grammar = `E = add | "1"
     add = E <"+"> E`;
     const p = createParser(grammar);
     const t = p("1+1+1", { ambiguity: "sppf" });
-    // TODO: top node should show two packed nodes
+    expect(t?.ambiguous).toEqual(undefined);
+    expect(t?.children?.length).toEqual(1);
     expect(count_trees(t!)).toEqual(2);
   });
 });
