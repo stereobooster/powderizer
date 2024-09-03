@@ -37,7 +37,8 @@ TODO:
 - [x] readme
 - [x] publish demo
 - [x] publish npm package
-- [ ] ambiguity nodes instead of packed nodes?
+- [ ] try to implement SPPF
+- [ ] show value nodes only once in viz?
 - [ ] support `\n\r` in grammar
 - [ ] convert edge cases from `compact_tree` to tests
 - [ ] examples of typical problems and solution in different popular parsers
@@ -69,6 +70,3 @@ Strange examples:
 
 - [`S = S* "a"` show all trees](http://localhost:5173/?g=S+%3D+S*+%22a%22&t=aaa&all=1&ranges=1&values=)
   - fixed in the last commit
-- in this http://localhost:5173/?g=E+%3D+add+%7C+%221%22%0Aadd+%3D+E+%3C%22%2B%22%3E+E&t=1%2B1%2B1%2B1&all=1&ranges=1&values=
-  - ambigouos nodes need to be moved down one level
-
