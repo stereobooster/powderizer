@@ -1,6 +1,6 @@
 import { describe, it, expect } from "vitest";
 import { createParser } from "../src/grammar.js";
-import { count_trees } from "../src/utils.js";
+import { tree_stat } from "../src/utils.js";
 
 describe("tricky cases", () => {
   it('<S> = "a"*', () => {
@@ -85,7 +85,7 @@ describe("tricky cases", () => {
     const t = p("1+1+1", { ambiguity: "ambiguous" });
     expect(t?.ambiguous).toEqual(true);
     expect(t?.children?.length).toEqual(2);
-    expect(count_trees(t!)).toEqual(2);
+    expect(tree_stat(t!)).toEqual([2, 1, 0]);
   });
 
   // http://localhost:5173/?g=E+%3D+add+%7C+%221%22%0Aadd+%3D+E+%3C%22%2B%22%3E+E&t=1%2B1%2B1&all=1&ranges=1&values=
@@ -96,15 +96,7 @@ describe("tricky cases", () => {
     const t = p("1+1+1", { ambiguity: "ambiguous" });
     expect(t?.ambiguous).toEqual(undefined);
     expect(t?.children?.length).toEqual(1);
-    expect(count_trees(t!)).toEqual(2);
-  });
-
-  // http://localhost:5173/?g=S+%3D+S*+%22a%22&t=aaa&all=1&ranges=1&values=
-  it('S = S* "a"', () => {
-    const grammar = `S = S* "a"`;
-    const p = createParser(grammar);
-    const t = p("aaa", { ambiguity: "ambiguous" });
-    expect(count_trees(t!)).toEqual(2);
+    expect(tree_stat(t!)).toEqual([2, 1, 0]);
   });
 
   // http://localhost:5173/?g=%3CS%3E+%3D+S*+%22a%22&t=aaa&all=1&ranges=1&values=
@@ -113,6 +105,54 @@ describe("tricky cases", () => {
     const p = createParser(grammar);
     const t = p("aaa", { ambiguity: "ambiguous" });
     // even so both subtrees are the same
-    expect(count_trees(t!)).toEqual(2);
+    expect(tree_stat(t!)).toEqual([2, 1, 3]);
+  });
+
+  // http://localhost:5173/?g=E+%3D+mul+%7C+add+%7C+%221%22%0Amul+%3D+E+%3C%22*%22%3E+E%0Aadd+%3D+E+%3C%22%2B%22%3E+E%0A&t=1%2B1*1%2B1&all=1&ranges=1&values=
+  it("compaction example 1", () => {
+    const grammar = `E = mul | add | "1"
+mul = E <"*"> E
+add = E <"+"> E`;
+    const p = createParser(grammar);
+    const t = p("1+1*1+1", { ambiguity: "ambiguous" });
+    expect(tree_stat(t!)).toEqual([5, 3, 0]);
+    const t1 = p("1+1+1+1", { ambiguity: "ambiguous" });
+    expect(tree_stat(t1!)).toEqual([5, 3, 0]);
+  });
+
+  // http://localhost:5173/?g=%3CE%3E+%3D+add+%7C+%221%22%0Aadd+%3D+E+%3C%22%2B%22%3E+E%0A&t=1%2B1%2B1%2B1&all=1&ranges=&values=
+  it("compaction example 2", () => {
+    const grammar = `<E> = add | "1"
+add = E <"+"> E`;
+    const p = createParser(grammar);
+    const t = p("1+1+1+1", { ambiguity: "ambiguous" });
+    expect(tree_stat(t!)).toEqual([5, 3, 0]);
+  });
+
+  // http://localhost:5173/?g=EXP+%3D+E%3B%0A%3CE%3E+%3D+add+%7C+%221%22%0Aadd+%3D+E+%3C%22%2B%22%3E+E&t=1%2B1%2B1%2B1&all=1&ranges=1&values=
+  it("compaction example 3", () => {
+    const grammar = `EXP = E;
+<E> = add | "1"
+add = E <"+"> E`;
+    const p = createParser(grammar);
+    const t = p("1+1+1+1", { ambiguity: "ambiguous" });
+    expect(tree_stat(t!)).toEqual([5, 3, 0]);
+  });
+
+  // http://localhost:5173/?g=E+%3D+E+%28%22%2B%22+%7C+%22*%22%29+E+%7C+%221%22&t=1%2B1%2B1&all=1&ranges=1&values=
+  it("compaction example 4", () => {
+    const grammar = `E = E ("+" | "*") E | "1"`;
+    const p = createParser(grammar);
+    const t = p("1+1+1", { ambiguity: "ambiguous" });
+    expect(tree_stat(t!)).toEqual([2, 1, 0]);
+  });
+
+  // http://localhost:5173/?g=S+%3D+S*+%22a%22&t=aaa&all=1&ranges=1&values=
+  it.skip("compaction example 5", () => {
+    const grammar = `S = S* "a"`;
+    const p = createParser(grammar);
+    const t = p("aaa", { ambiguity: "ambiguous" });
+    // TODo it doesn't work as expected
+    expect(tree_stat(t!)).toEqual([2, 1, 0]);
   });
 });

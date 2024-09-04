@@ -1,7 +1,7 @@
 import { describe, it, expect } from "vitest";
 import { parse } from "../src/parse.js";
 import { alt, seq, tok, rep, omit, lex, reg } from "../src/dsl.js";
-import { count_trees, first_tree } from "../src/utils.js";
+import { first_tree, tree_stat } from "../src/utils.js";
 import { leftRec, mathExp, thriceA } from "./test_samples.js";
 
 describe("parse", () => {
@@ -103,7 +103,7 @@ describe("parse", () => {
   it("show positions", () => {
     const grammar = thriceA();
     const tree = parse("aaa", grammar, { showPos: true })!;
-    expect(count_trees(tree)).toBe(1);
+    expect(tree_stat(tree)).toEqual([1, 0, 0]);
     expect(first_tree(tree)).toEqual(tree);
     expect(tree).toMatchInlineSnapshot(`
       {
@@ -142,7 +142,7 @@ describe("parse", () => {
   it("left recursion", () => {
     const grammar = leftRec();
     const tree = parse("aaa", grammar)!;
-    expect(count_trees(tree)).toBe(1);
+    expect(tree_stat(tree)).toEqual([1, 0, 0]);
     expect(first_tree(tree)).toEqual(tree);
     expect(tree).toMatchInlineSnapshot(`
       {
@@ -179,7 +179,7 @@ describe("parse", () => {
   it("ambigious gramar", () => {
     const grammar = mathExp();
     const tree = parse("1+1+1", grammar, { ambiguity: "ambiguous" })!;
-    expect(count_trees(tree)).toBe(2);
+    expect(tree_stat(tree)).toEqual([2,1,0]);
     expect(tree).toMatchInlineSnapshot(`
       {
         "ambiguous": true,

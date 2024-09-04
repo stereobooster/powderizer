@@ -1,19 +1,23 @@
 import type { Exp } from "./core.js";
 
-export function count_trees(tree: AmbiguousTree): number {
-  const rec = (tree: AmbiguousTree): number => {
-    if (tree.ambiguous) {
-      return tree.children.map(rec).reduce((a, b) => a + b, 0);
-    }
+// trees, ambiguty nodes, untagged nodes
+export function tree_stat(tree: AmbiguousTree): [number, number, number] {
+  if (tree.ambiguous) {
+    return tree.children
+      .map(tree_stat)
+      .reduce((a, b) => [a[0] + b[0], a[1] + b[1], a[2] + b[2]], [0, 1, 0]);
+  }
 
-    if (tree.children && tree.children.length > 0) {
-      return tree.children.map(rec).reduce((a, b) => a * b, 1);
-    }
+  if (tree.children && tree.children.length > 0) {
+    return tree.children
+      .map(tree_stat)
+      .reduce(
+        (a, b) => [a[0] * b[0], a[1] + b[1], a[2] + b[2]],
+        [1, 0, tree.tag ? 0 : 1]
+      );
+  }
 
-    return 1;
-  };
-
-  return rec(tree);
+  return [1, 0, tree.tag || tree.value !== undefined ? 0 : 1];
 }
 
 export function first_tree(tree: AmbiguousTree): AmbiguousTree {
@@ -202,7 +206,7 @@ export function compact_tree(
 
         // http://localhost:5173/?g=%3CE%3E+%3D+add+%7C+%221%22%0Aadd+%3D+E+%3C%22%2B%22%3E+E%0A&t=1%2B1%2B1%2B1&all=1&ranges=&values=
         // http://localhost:5173/?g=EXP+%3D+E%3B%0A%3CE%3E+%3D+add+%7C+%221%22%0Aadd+%3D+E+%3C%22%2B%22%3E+E&t=1%2B1%2B1%2B1&all=1&ranges=1&values=
-        if (children.every((x) => x.length === 1)) {  
+        if (children.every((x) => x.length === 1)) {
           const ch = children.flatMap((x) =>
             x[0].ambiguous ? x[0].children : x[0]
           );
@@ -221,6 +225,7 @@ export function compact_tree(
             children: children.flatMap((ch) => {
               // don't have examples for this
               if (ch.length === 0) return [];
+              if (ch.length === 1) return ch[0];
               return addPos(
                 {
                   children: ch,
