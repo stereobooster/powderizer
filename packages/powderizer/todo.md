@@ -38,6 +38,8 @@ TODO:
 - [x] publish demo
 - [x] publish npm package
 - [ ] convert edge cases from `compact_tree` to tests
+  - count ambiguty nodes
+  - count untaged nodes
 - [ ] try to implement SPPF
 - [ ] show value nodes only once in viz?
 - [ ] support `\n\r` in grammar
