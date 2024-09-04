@@ -164,11 +164,29 @@ export function compact_tree(
         }
 
         if (e.e.tag && e.e.exps.length !== 1) {
+          // http://localhost:5173/?g=E+%3D+mul+%7C+add+%7C+%221%22%0Amul+%3D+E+%3C%22*%22%3E+E%0Aadd+%3D+E+%3C%22%2B%22%3E+E%0A&t=1%2B1*1%2B1&all=1&ranges=1&values=
+          return rec({
+            e: {
+              ...e.e,
+              type: "Alt",
+              tag: e.e.tag,
+              exps: [
+                {
+                  e: {
+                    ...e.e,
+                    type: "Alt",
+                    tag: "",
+                    exps: e.e.exps,
+                  },
+                },
+              ],
+            },
+          });
           // can be triggered by S = S | "a"
           // unless this exception it would trigger "too much recursion" error anyway
-          throw new Error(
-            "Lost named node. Tip: check if there is direct recursion"
-          );
+          // throw new Error(
+          //   "Lost named node. Tip: check if there is direct recursion"
+          // );
         }
 
         const children = e.e.exps
@@ -182,9 +200,9 @@ export function compact_tree(
         if (children.length === 1 || ambiguity === "first") return children[0];
         if (ambiguity === "error") throw new Error("Ambiguous parse tree");
 
-        // http://localhost:5173/?g=%3CE%3E+%3D+%3C%22%28%22%3E+E+%3C%22%29%22%3E+%7C+mul+%7C+add+%7C+sub+%7C+num%0Amul+%3D+E+%3C%22*%22%3E+E%0Aadd+%3D+E+%3C%22%2B%22%3E+E%0Asub+%3D+E+%3C%22-%22%3E+E%0Anum+%3D+%23%22%5C%5Cd%22&t=1%2B2*3%2B4&all=1&ranges=
-        if (children.every((x) => x.length === 1)) {
-          // http://localhost:5173/?g=EXP+%3D+E%3B%0A%3CE%3E+%3D+%3C%22%28%22%3E+E+%3C%22%29%22%3E+%7C+mul+%7C+add+%7C+sub+%7C+num%0Amul+%3D+E+%3C%22*%22%3E+E%0Aadd+%3D+E+%3C%22%2B%22%3E+E%0Asub+%3D+E+%3C%22-%22%3E+E%0Anum+%3D+%23%22%5C%5Cd%22&t=1%2B2*3%2B4&all=1&ranges=1
+        // http://localhost:5173/?g=%3CE%3E+%3D+add+%7C+%221%22%0Aadd+%3D+E+%3C%22%2B%22%3E+E%0A&t=1%2B1%2B1%2B1&all=1&ranges=&values=
+        // http://localhost:5173/?g=EXP+%3D+E%3B%0A%3CE%3E+%3D+add+%7C+%221%22%0Aadd+%3D+E+%3C%22%2B%22%3E+E&t=1%2B1%2B1%2B1&all=1&ranges=1&values=
+        if (children.every((x) => x.length === 1)) {  
           const ch = children.flatMap((x) =>
             x[0].ambiguous ? x[0].children : x[0]
           );

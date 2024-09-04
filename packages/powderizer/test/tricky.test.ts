@@ -98,4 +98,21 @@ describe("tricky cases", () => {
     expect(t?.children?.length).toEqual(1);
     expect(count_trees(t!)).toEqual(2);
   });
+
+  // http://localhost:5173/?g=S+%3D+S*+%22a%22&t=aaa&all=1&ranges=1&values=
+  it('S = S* "a"', () => {
+    const grammar = `S = S* "a"`;
+    const p = createParser(grammar);
+    const t = p("aaa", { ambiguity: "ambiguous" });
+    expect(count_trees(t!)).toEqual(2);
+  });
+
+  // http://localhost:5173/?g=%3CS%3E+%3D+S*+%22a%22&t=aaa&all=1&ranges=1&values=
+  it('<S> = S* "a"', () => {
+    const grammar = `<S> = S* "a"`;
+    const p = createParser(grammar);
+    const t = p("aaa", { ambiguity: "ambiguous" });
+    // even so both subtrees are the same
+    expect(count_trees(t!)).toEqual(2);
+  });
 });

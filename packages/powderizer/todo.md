@@ -37,10 +37,10 @@ TODO:
 - [x] readme
 - [x] publish demo
 - [x] publish npm package
+- [ ] convert edge cases from `compact_tree` to tests
 - [ ] try to implement SPPF
 - [ ] show value nodes only once in viz?
 - [ ] support `\n\r` in grammar
-- [ ] convert edge cases from `compact_tree` to tests
 - [ ] examples of typical problems and solution in different popular parsers
   - https://bestofjs.org/projects?tags=parsing
   - https://chevrotain.io/performance/
@@ -65,8 +65,3 @@ TODO:
 - [ ] add any node
 - [ ] maybe remove tag from all except `seq`? Or add tag everywhere?
 - [ ] do I need to support [`Iterable<X>`](https://www.typescriptlang.org/docs/handbook/iterators-and-generators.html)?
-
-Strange examples:
-
-- [`S = S* "a"` show all trees](http://localhost:5173/?g=S+%3D+S*+%22a%22&t=aaa&all=1&ranges=1&values=)
-  - fixed in the last commit
