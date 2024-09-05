@@ -16,6 +16,13 @@ TODO:
 - [x] Ambiguous trees resolution
 - [x] demo site
 - [x] show value in tree
+- [x] readme
+- [x] publish demo
+- [x] publish npm package
+- [x] convert edge cases from `compact_tree` to tests
+  - count ambiguty nodes
+  - count untaged nodes
+- [x] write about conjunction
 - add BNF grammar with regular extension
   - [x] evaluator
   - [x] support precedence for `a b | c`
@@ -31,18 +38,14 @@ TODO:
   - [x] support optional `;` in the end
   - [x] support optional `\n` and ` ` everywhere
   - [x] support optional `\n` and ` ` in `()`, `<>`, `[]`
+  - [ ] support `\n\r` in grammar
+  - [ ] double slashes in regexp
   - [ ] comments?
   - [ ] multi-char regexps? (accumulate striing?)
-- [x] readme
-- [x] publish demo
-- [x] publish npm package
-- [x] convert edge cases from `compact_tree` to tests
-  - count ambiguty nodes
-  - count untaged nodes
-- [ ] write about conjunction
+- [ ] functions/macros, import
+  - stdlib, like quoted string, delimited list
 - [ ] try to implement SPPF
 - [ ] show value nodes only once in viz?
-- [ ] support `\n\r` in grammar
 - [ ] examples of typical problems and solution in different popular parsers
   - https://bestofjs.org/projects?tags=parsing
   - https://chevrotain.io/performance/
@@ -53,8 +56,6 @@ TODO:
   - MAL
 - [ ] compare against [instaparsejs](https://github.com/stereobooster/instaparsejs)
 - [ ] error reporting?
-- [ ] functions/macros, import
-  - stdlib, like quoted string, delimited list
 - [ ] limited (without recursion) negation
 - [ ] negative lookahead
 - [ ] positive lookahead
