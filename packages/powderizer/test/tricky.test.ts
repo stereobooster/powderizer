@@ -148,11 +148,15 @@ add = E <"+"> E`;
   });
 
   // http://localhost:5173/?g=S+%3D+S*+%22a%22&t=aaa&all=1&ranges=1&values=
-  it.skip("compaction example 5", () => {
+  it("compaction example 5", () => {
     const grammar = `S = S* "a"`;
     const p = createParser(grammar);
+    // it may contain unwanted untaged nodes in ambiguous tree
     const t = p("aaa", { ambiguity: "ambiguous" });
-    // TODo it doesn't work as expected
-    expect(tree_stat(t!)).toEqual([2, 1, 0]);
+    expect(tree_stat(t!)).toEqual([2, 1, 1]);
+
+    // but when single tree extracted there are no untaged
+    const t1 = p("aaa", { ambiguity: "first" });
+    expect(tree_stat(t1!)).toEqual([1, 0, 0]);
   });
 });
