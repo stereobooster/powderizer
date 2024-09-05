@@ -4,7 +4,6 @@ TODO:
 - [x] add visualization of tree
 - [x] add labels to node
 - [x] compact tree
-- [x] count_trees
 - [x] first_tree
 - [x] add kleene star
 - [x] add omit node
