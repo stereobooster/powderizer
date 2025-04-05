@@ -5,6 +5,7 @@ export type ParseOptions = CompactOptions;
 
 export function parse(str: string[] | string, e: Exp, opts?: ParseOptions) {
   const ambiguity = opts?.ambiguity || "first";
+  // alternatively can use https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/String/Symbol.iterator for string
   const tokens = typeof str === "string" ? Array.from(str) : str;
   const r = parse_original(tokens, e);
   if (r.length === 0) return;

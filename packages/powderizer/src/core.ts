@@ -387,14 +387,13 @@ function unwrap_top_zipper(z: Zipper): Exp {
 }
 
 export function parse(ts: Tok[], e: Exp) {
-  function parse_(p: Pos, ts: Tok[], z: Zipper): Zipper[] {
-    if (ts.length === 0) return derive(p, t_eof, z);
+  function parse_(p: Pos, z: Zipper): Zipper[] {
+    if (ts.length === p) return derive(p, t_eof, z);
     else {
-      const [t, ...ts_] = ts;
-      return derive(p, t, z)
-        .map((z_) => parse_(p + 1, ts_, z_))
+      return derive(p, ts[p], z)
+        .map((z_) => parse_(p + 1, z_))
         .flat();
     }
   }
-  return parse_(0, ts, init_zipper(e)).map(unwrap_top_zipper);
+  return parse_(0, init_zipper(e)).map(unwrap_top_zipper);
 }
