@@ -91,6 +91,7 @@ type Mem = { start_pos: Pos; parents: Cxt[]; end_pos: Pos; result: Exp };
 type Zipper = [Exp_, Mem];
 
 const e_bottom: Exp = Object.freeze({ e: { type: "Alt", exps: [] } });
+const e_array: any[] = Object.freeze([]) as any;
 
 function derive(p: Pos, t: Tok, z: Zipper): Zipper[] {
   function d_d(c: Cxt, e: Exp): Zipper[] {
@@ -98,7 +99,7 @@ function derive(p: Pos, t: Tok, z: Zipper): Zipper[] {
       e.m.parents.unshift(c);
       // when it happens that start and end pos are the same (except empty string)?
       if (p === e.m.end_pos) return d_u_(e.m.result, c);
-      else return [];
+      else return e_array;
     } else {
       const m: Mem = {
         start_pos: p,
@@ -121,21 +122,21 @@ function derive(p: Pos, t: Tok, z: Zipper): Zipper[] {
                 {
                   type: "Seq",
                   sym: t,
-                  exps: [],
+                  exps: e_array,
                   start_pos: m.start_pos,
                   end_pos: m.start_pos + t.length,
                 },
                 m,
               ],
             ]
-          : [];
+          : e_array;
       case "Seq":
         if (e_.exps.length === 0)
           return d_u(
             {
               type: "Seq",
               sym: e_.sym,
-              exps: [],
+              exps: e_array,
               start_pos: m.start_pos,
               end_pos: m.start_pos,
               tag: e_.tag,
@@ -154,7 +155,7 @@ function derive(p: Pos, t: Tok, z: Zipper): Zipper[] {
               type: "SeqC",
               mem: m_,
               sym: e_.sym,
-              exps1: [],
+              exps1: e_array,
               exps2: e_.exps.slice(1),
               tag: e_.tag,
             },
@@ -181,21 +182,21 @@ function derive(p: Pos, t: Tok, z: Zipper): Zipper[] {
                 {
                   type: "Seq",
                   sym: "",
-                  exps: [],
+                  exps: e_array,
                   start_pos: m.start_pos,
                   end_pos: m.start_pos,
                   tag: e_.tag,
                 },
                 m_
               )
-            : [],
+            : e_array,
           // recognize first symbol
           counter < e_.max
             ? d_d(
                 {
                   type: "RepC",
                   mem: m_,
-                  exps1: [],
+                  exps1: e_array,
                   exp: e_.exp,
                   tag: e_.tag,
                   counter: counter + 1,
@@ -204,7 +205,7 @@ function derive(p: Pos, t: Tok, z: Zipper): Zipper[] {
                 },
                 e_.exp
               )
-            : [],
+            : e_array,
         ].flat();
       }
       case "Omit":
@@ -212,21 +213,21 @@ function derive(p: Pos, t: Tok, z: Zipper): Zipper[] {
       case "Lex":
         return d_d({ type: "LexC", mem: m }, e_.exp);
       case "Reg":
-        if (t === t_eof) return [];
+        if (t === t_eof) return e_array;
         return e_.value.test(t)
           ? [
               [
                 {
                   type: "Seq",
                   sym: t,
-                  exps: [],
+                  exps: e_array,
                   start_pos: m.start_pos,
                   end_pos: m.start_pos + t.length,
                 },
                 m,
               ],
             ]
-          : [];
+          : e_array;
     }
   }
 
@@ -240,7 +241,7 @@ function derive(p: Pos, t: Tok, z: Zipper): Zipper[] {
   function d_u_(e: Exp, c: Cxt): Zipper[] {
     switch (c.type) {
       case "TopC":
-        return [];
+        return e_array;
       case "SeqC":
         if (c.exps2.length === 0)
           return d_u(
@@ -270,7 +271,7 @@ function derive(p: Pos, t: Tok, z: Zipper): Zipper[] {
         if (p === c.mem.end_pos) {
           if (c.mem.result.e.type === "Alt") {
             c.mem.result.e.exps.unshift(e);
-            return [];
+            return e_array;
           } else throw new Error("Not an Alt.");
         } else
           return d_u(
@@ -298,7 +299,7 @@ function derive(p: Pos, t: Tok, z: Zipper): Zipper[] {
                 },
                 c.mem
               )
-            : [],
+            : e_array,
           // next item to recognize by Rep
           c.counter < c.max
             ? d_d(
@@ -314,14 +315,14 @@ function derive(p: Pos, t: Tok, z: Zipper): Zipper[] {
                 },
                 c.exp
               )
-            : [],
+            : e_array,
         ].flat();
       }
       case "OmitC":
         return d_u(
           {
             type: "Omit",
-            exps: [],
+            exps: e_array,
             start_pos: c.mem.start_pos,
             end_pos: e.e.end_pos,
           },
@@ -344,7 +345,7 @@ function derive(p: Pos, t: Tok, z: Zipper): Zipper[] {
 }
 
 function init_zipper(e: Exp): Zipper {
-  const e_: Exp_ = { type: "Seq", sym: s_bottom, exps: [] };
+  const e_: Exp_ = { type: "Seq", sym: s_bottom, exps: e_array };
   const m_top: Mem = {
     start_pos: p_bottom,
     parents: [{ type: "TopC" }],
@@ -355,7 +356,7 @@ function init_zipper(e: Exp): Zipper {
     type: "SeqC",
     mem: m_top,
     sym: s_bottom,
-    exps1: [],
+    exps1: e_array,
     exps2: [e, { e: { type: "Tok", value: t_eof } }],
   };
   const m_seq: Mem = {
