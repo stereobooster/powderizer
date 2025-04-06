@@ -54,6 +54,7 @@ TODO:
 - [ ] show all trees one by one?
 - [ ] Lisp parser
   - MAL
+  - [Clojure.g4](https://github.com/antlr/grammars-v4/blob/master/clojure/Clojure.g4)
 - [ ] compare against [instaparsejs](https://github.com/stereobooster/instaparsejs)
 - [ ] error reporting?
 - [ ] limited (without recursion) negation
@@ -61,10 +62,11 @@ TODO:
 - [ ] positive lookahead
 - [ ] ordered choice
 - [ ] disambiguation filters
-- [ ] all_trees (possible to do with zipper)
-- [ ] compact_tree - add options (to avoid walking tree again)
+- [ ] `all_trees` (possible to do with zipper)
+- [ ] `compact_tree` - add options (to avoid walking tree again)
   - [ ] to count trees
   - [x] to extract first tree
 - [ ] add any node
 - [ ] maybe remove tag from all except `seq`? Or add tag everywhere?
 - [ ] do I need to support [`Iterable<X>`](https://www.typescriptlang.org/docs/handbook/iterators-and-generators.html)?
+- [ ] can use `import { serialize, deserialize } from "node:v8"` to memoize `evaluate`

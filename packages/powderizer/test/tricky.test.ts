@@ -5,24 +5,22 @@ import { tree_stat } from "../src/utils.js";
 describe("tricky cases", () => {
   it('<S> = "a"*', () => {
     const p = createParser('<S> = "a"*');
-    expect(p("")).toEqual({ tag: "", children: [] });
+    expect(p("")).toEqual({ children: [] });
     expect(p("aa")).toEqual({
-      tag: "",
       children: [{ value: "a" }, { value: "a" }],
     });
   });
 
   it('<S> = <"a">*', () => {
     const p = createParser('<S> = <"a">*');
-    expect(p("")).toEqual({ tag: "", children: [] });
-    expect(p("aa")).toEqual({ tag: "", children: [] });
+    expect(p("")).toEqual({ children: [] });
+    expect(p("aa")).toEqual({ children: [] });
   });
 
   it('<S> = S "a" | ""', () => {
     const p = createParser('<S> = S "a" | ""');
-    expect(p("")).toEqual({ tag: "", children: [] });
+    expect(p("")).toEqual({ children: [] });
     expect(p("aa")).toEqual({
-      tag: "",
       children: [{ value: "a" }, { value: "a" }],
     });
   });
@@ -109,7 +107,7 @@ describe("tricky cases", () => {
   });
 
   // http://localhost:5173/?g=E+%3D+mul+%7C+add+%7C+%221%22%0Amul+%3D+E+%3C%22*%22%3E+E%0Aadd+%3D+E+%3C%22%2B%22%3E+E%0A&t=1%2B1*1%2B1&all=1&ranges=1&values=
-  it("compaction example 1", () => {
+  it.only("compaction example 1", () => {
     const grammar = `E = mul | add | "1"
 mul = E <"*"> E
 add = E <"+"> E`;

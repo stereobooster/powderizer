@@ -11,14 +11,14 @@ export type Exp = { m?: Mem; e: Exp_ };
 type Exp_ =
   | {
       type: "Tok";
-      tag: string; // always empty string - token can't have tag
+      tag?: string; // always empty string - token can't have tag
       value: Tok;
       start_pos?: number;
       end_pos?: number;
     }
   | {
       type: "Seq";
-      tag: string;
+      tag?: string;
       sym: Sym;
       exps: Exp[];
       start_pos?: number;
@@ -26,7 +26,7 @@ type Exp_ =
     }
   | {
       type: "Alt";
-      tag: string;
+      tag?: string;
       exps: Exp[];
       start_pos?: number;
       end_pos?: number;
@@ -34,7 +34,7 @@ type Exp_ =
   // extension
   | {
       type: "Rep"; // Kleene star
-      tag: string;
+      tag?: string;
       exp: Exp;
       start_pos?: number;
       end_pos?: number;
@@ -43,21 +43,21 @@ type Exp_ =
     }
   | {
       type: "Omit"; // remove node from the final tree
-      tag: string; // always empty string - because it will never be in the tree
+      tag?: string; // always empty string - because it will never be in the tree
       exps: Exp[]; // array for convinience, but always one item
       start_pos?: number;
       end_pos?: number;
     }
   | {
       type: "Lex"; // lexical grammar
-      tag: string; // always empty string - the same as Tok
+      tag?: string; // always empty string - the same as Tok
       exp: Exp;
       start_pos?: number;
       end_pos?: number;
     }
   | {
       type: "Reg"; // token matched via regular expression
-      tag: string; // always empty string - the same as Tok
+      tag?: string; // always empty string - the same as Tok
       value: RegExp;
       start_pos?: number;
       end_pos?: number;
@@ -66,16 +66,16 @@ type Cxt =
   | { type: "TopC" }
   | {
       type: "SeqC";
-      tag: string;
+      tag?: string;
       mem: Mem;
       sym: Sym;
       exps1: Exp[];
       exps2: Exp[];
     }
-  | { type: "AltC"; tag: string; mem: Mem }
+  | { type: "AltC"; tag?: string; mem: Mem }
   | {
       type: "RepC";
-      tag: string;
+      tag?: string;
       mem: Mem;
       exps1: Exp[];
       exp: Exp;
@@ -90,7 +90,7 @@ type Mem = { start_pos: Pos; parents: Cxt[]; end_pos: Pos; result: Exp };
 
 type Zipper = [Exp_, Mem];
 
-const e_bottom: Exp = Object.freeze({ e: { type: "Alt", exps: [], tag: "" } });
+const e_bottom: Exp = Object.freeze({ e: { type: "Alt", exps: [] } });
 
 function derive(p: Pos, t: Tok, z: Zipper): Zipper[] {
   function d_d(c: Cxt, e: Exp): Zipper[] {
@@ -124,7 +124,6 @@ function derive(p: Pos, t: Tok, z: Zipper): Zipper[] {
                   exps: [],
                   start_pos: m.start_pos,
                   end_pos: m.start_pos + t.length,
-                  tag: e_.tag,
                 },
                 m,
               ],
@@ -146,7 +145,7 @@ function derive(p: Pos, t: Tok, z: Zipper): Zipper[] {
         else {
           const m_: Mem = {
             start_pos: m.start_pos,
-            parents: [{ type: "AltC", mem: m, tag: "" }],
+            parents: [{ type: "AltC", mem: m }],
             end_pos: p_bottom,
             result: e_bottom,
           };
@@ -170,7 +169,7 @@ function derive(p: Pos, t: Tok, z: Zipper): Zipper[] {
       case "Rep": {
         const m_: Mem = {
           start_pos: m.start_pos,
-          parents: [{ type: "AltC", mem: m, tag: "" }],
+          parents: [{ type: "AltC", mem: m }],
           end_pos: p_bottom,
           result: e_bottom,
         };
@@ -223,7 +222,6 @@ function derive(p: Pos, t: Tok, z: Zipper): Zipper[] {
                   exps: [],
                   start_pos: m.start_pos,
                   end_pos: m.start_pos + t.length,
-                  tag: e_.tag,
                 },
                 m,
               ],
@@ -326,7 +324,6 @@ function derive(p: Pos, t: Tok, z: Zipper): Zipper[] {
             exps: [],
             start_pos: c.mem.start_pos,
             end_pos: e.e.end_pos,
-            tag: "",
           },
           c.mem
         );
@@ -337,7 +334,6 @@ function derive(p: Pos, t: Tok, z: Zipper): Zipper[] {
             exp: e,
             start_pos: c.mem.start_pos,
             end_pos: e.e.end_pos,
-            tag: "",
           },
           c.mem
         );
@@ -348,7 +344,7 @@ function derive(p: Pos, t: Tok, z: Zipper): Zipper[] {
 }
 
 function init_zipper(e: Exp): Zipper {
-  const e_: Exp_ = { type: "Seq", sym: s_bottom, exps: [], tag: "" };
+  const e_: Exp_ = { type: "Seq", sym: s_bottom, exps: [] };
   const m_top: Mem = {
     start_pos: p_bottom,
     parents: [{ type: "TopC" }],
@@ -360,8 +356,7 @@ function init_zipper(e: Exp): Zipper {
     mem: m_top,
     sym: s_bottom,
     exps1: [],
-    exps2: [e, { e: { type: "Tok", value: t_eof, tag: "" } }],
-    tag: "",
+    exps2: [e, { e: { type: "Tok", value: t_eof } }],
   };
   const m_seq: Mem = {
     start_pos: p_bottom,

@@ -16,7 +16,6 @@ describe("parse", () => {
     const tree = parse("11", grammar);
     expect(tree).toEqual({
       children: [{ value: "1" }, { value: "1" }],
-      tag: "",
     });
   });
 
@@ -26,7 +25,6 @@ describe("parse", () => {
     const tree = parse("11", grammar);
     expect(tree).toEqual({
       children: [{ value: "1" }, { value: "1" }],
-      tag: "",
     });
   });
 

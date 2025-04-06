@@ -33,7 +33,7 @@ export function first_tree(tree: AmbiguousTree): AmbiguousTree {
 export type AmbiguousTree =
   | {
       ambiguous?: false;
-      tag: string;
+      tag?: string;
       pos?: [number, number];
       value?: undefined;
       children: AmbiguousTree[];
@@ -167,31 +167,30 @@ export function compact_tree(
           );
         }
 
-        if (e.e.tag && e.e.exps.length !== 1) {
-          // http://localhost:5173/?g=E+%3D+mul+%7C+add+%7C+%221%22%0Amul+%3D+E+%3C%22*%22%3E+E%0Aadd+%3D+E+%3C%22%2B%22%3E+E%0A&t=1%2B1*1%2B1&all=1&ranges=1&values=
-          return rec({
-            e: {
-              ...e.e,
-              type: "Alt",
-              tag: e.e.tag,
-              exps: [
-                {
-                  e: {
-                    ...e.e,
-                    type: "Alt",
-                    tag: "",
-                    exps: e.e.exps,
-                  },
-                },
-              ],
-            },
-          });
-          // can be triggered by S = S | "a"
-          // unless this exception it would trigger "too much recursion" error anyway
-          // throw new Error(
-          //   "Lost named node. Tip: check if there is direct recursion"
-          // );
-        }
+        // if (e.e.tag && e.e.exps.length !== 1) {
+        //   // http://localhost:5173/?g=E+%3D+mul+%7C+add+%7C+%221%22%0Amul+%3D+E+%3C%22*%22%3E+E%0Aadd+%3D+E+%3C%22%2B%22%3E+E%0A&t=1%2B1*1%2B1&all=1&ranges=1&values=
+        //   return rec({
+        //     e: {
+        //       ...e.e,
+        //       type: "Alt",
+        //       tag: e.e.tag,
+        //       exps: [
+        //         {
+        //           e: {
+        //             ...e.e,
+        //             type: "Alt",
+        //             exps: e.e.exps,
+        //           },
+        //         },
+        //       ],
+        //     },
+        //   });
+        //   // can be triggered by S = S | "a"
+        //   // unless this exception it would trigger "too much recursion" error anyway
+        //   // throw new Error(
+        //   //   "Lost named node. Tip: check if there is direct recursion"
+        //   // );
+        // }
 
         const children = e.e.exps
           .map((e_) => {
@@ -229,7 +228,6 @@ export function compact_tree(
               return addPos(
                 {
                   children: ch,
-                  tag: "",
                 },
                 e
               );
@@ -254,12 +252,10 @@ export function compact_tree(
     if (result.length === 0)
       return {
         children: [],
-        tag: "",
       };
     if (result.length <= 1) return result[0];
     const rr: AmbiguousTree = {
       children: result,
-      tag: "",
     };
     if (showPos) rr.pos = result[0].pos;
     return rr;

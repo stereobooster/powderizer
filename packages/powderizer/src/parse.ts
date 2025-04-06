@@ -19,7 +19,6 @@ export function parse(str: string[] | string, e: Exp, opts?: ParseOptions) {
         {
           e: {
             type: "Alt",
-            tag: "",
             exps: r,
             start_pos: r[0].e.start_pos,
             end_pos: r[0].e.end_pos,
